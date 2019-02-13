@@ -1,14 +1,6 @@
 #!/usr/bin/python
 
 
-class Clause(object):
-    '''Class for representing a clause.
-    '''
-
-    def __init__(self):
-        pass
-
-
 class Reader(object):
     '''Class for reading the input file.
     '''
@@ -17,8 +9,12 @@ class Reader(object):
         self.file = file
 
     def read(self):
-        with open(self.file, 'r') as input:
-            for line in input:
+        non_p_lits = []
+        self.p_lits = []
+        self.clauses = []
+        self.unit_clauses = []
+        with open(self.file, 'r') as input_file:
+            for line in input_file:
                 parsed = line.split()
                 if parsed[0] == 'p':
                     var_cnts = int(parsed[2])
@@ -26,4 +22,28 @@ class Reader(object):
                 elif parsed[0] == 'c':
                     continue
                 else:
-                    pass
+                    eff_parsed = parsed[:-1]
+                    # Check for unit clauses.
+                    if len(eff_parsed) == 1:
+                        self.unit_clauses.extend(eff_parsed)
+                        continue
+
+                    clause = []
+                    for lit in eff_parsed:
+                        # Check for tautology.
+                        neg_lit = str(-int(lit))
+                        if neg_lit in clause:
+                            clause.remove(neg_lit)
+                            continue
+                        clause.append(lit)
+
+                        # Check for pure literals.
+                        if neg_lit not in self.p_lits:
+                            if lit not in non_p_lits:
+                                self.p_lits.append(lit)
+                        else:
+                            self.p_lits.remove(neg_lit)
+                            non_p_lits.append(lit)
+                            non_p_lits.append(neg_lit)
+
+                    self.clauses.append(clause)
