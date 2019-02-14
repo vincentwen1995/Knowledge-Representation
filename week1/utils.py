@@ -9,41 +9,70 @@ class Reader(object):
         self.file = file
 
     def read(self):
+        # Initialize variables.
         non_p_lits = []
+        vars_tmp = set()
         self.p_lits = []
         self.clauses = []
         self.unit_clauses = []
+
+        # Start reading from the file.
         with open(self.file, 'r') as input_file:
             for line in input_file:
                 parsed = line.split()
-                if parsed[0] == 'p':
-                    var_cnts = int(parsed[2])
-                    self.vars = [False for i in range(var_cnts)]
-                elif parsed[0] == 'c':
+                # Check whether it is valid line or supplementary line.
+                if parsed[0] == 'p' or parsed[0] == 'c':
                     continue
                 else:
+                    self.clauses.append(list())
+                    clause = self.clauses[-1]
+                    tautology = False
                     eff_parsed = parsed[:-1]
                     # Check for unit clauses.
                     if len(eff_parsed) == 1:
-                        self.unit_clauses.extend(eff_parsed)
-                        continue
-
-                    clause = []
-                    for lit in eff_parsed:
-                        # Check for tautology.
-                        neg_lit = str(-int(lit))
-                        if neg_lit in clause:
-                            clause.remove(neg_lit)
-                            continue
+                        lit = eff_parsed[0]
                         clause.append(lit)
 
+                        # Collect unit clauses.
+                        self.unit_clauses.append(clause)
+
+                        # Collect variable.
+                        vars_tmp.add(str(abs(int(lit))))
+
                         # Check for pure literals.
+                        neg_lit = str(-int(lit))
                         if neg_lit not in self.p_lits:
-                            if lit not in non_p_lits:
+                            if lit not in self.p_lits and lit not in non_p_lits:
                                 self.p_lits.append(lit)
                         else:
                             self.p_lits.remove(neg_lit)
                             non_p_lits.append(lit)
                             non_p_lits.append(neg_lit)
 
-                    self.clauses.append(clause)
+                    else:
+                        for lit in eff_parsed:
+                            int_lit = int(lit)
+                            clause.append(lit)
+
+                            # Collect variable.
+                            abs_int_lit = abs(int_lit)
+                            vars_tmp.add(str(abs_int_lit))
+
+                            # Check for tautology.
+                            neg_lit = str(-int_lit)
+                            if neg_lit in clause:
+                                tautology = True
+
+                            # Check for pure literals.
+                            if neg_lit not in self.p_lits:
+                                if lit not in self.p_lits and lit not in non_p_lits:
+                                    self.p_lits.append(lit)
+                            else:
+                                self.p_lits.remove(neg_lit)
+                                non_p_lits.append(lit)
+                                non_p_lits.append(neg_lit)
+                        # Remove clauses with tautology.
+                        if tautology:
+                            self.clauses.pop()
+        # Initialize all collected variables.
+        self.vars = dict.fromkeys(vars_tmp, False)

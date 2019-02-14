@@ -12,6 +12,10 @@ def main(argv):
     print(reader.p_lits)
     print('Unit clauses:')
     print(reader.unit_clauses)
+    print('Variables:')
+    print(reader.vars)
+    print('Clauses:')
+    print(reader.clauses)
 
 
 if __name__ == '__main__':
