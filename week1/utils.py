@@ -51,6 +51,7 @@ class Solver(object):
                         else:
                             self.p_lits.remove(neg_lit)
                             non_p_lits.append(abs_lit)
+                        self.clauses.pop()
                     else:
                         for lit in eff_parsed:
                             int_lit = int(lit)
@@ -74,6 +75,7 @@ class Solver(object):
                             self.clauses.pop()
         # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
         self.vars = dict.fromkeys(vars_tmp, [0, True])
+        self.imvars = immutable_vars
         for var in immutable_vars:
             int_var = int(var)
             var_ind = str(abs(int_var))
