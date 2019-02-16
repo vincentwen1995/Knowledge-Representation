@@ -39,7 +39,7 @@ class Solver(object):
                         clause.append(lit)
                         # Check if problem is solvable.
                         if neg_lit in immutable_vars:
-                            output_result(self, 'no')
+                            self.output_result('no')
                         # Collect immutable variables.
                         immutable_vars.extend(clause)
                         # Collect variable.
