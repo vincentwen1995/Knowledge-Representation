@@ -23,47 +23,27 @@ class Solver(object):
             for line in input_file:
                 parsed = line.split()
                 # Check whether it is valid line or supplementary line.
-                try:
-                    val = int(parsed[0])
-                except ValueError:
+                if parsed[0] == 'p' or parsed[0] == 'c':
                     continue
-                self.clauses.append(list())
-                clause = self.clauses[-1]
-                tautology = False
-                eff_parsed = parsed[:-1]
-                # Check for unit clauses.
-                if len(eff_parsed) == 1:
-                    lit = eff_parsed[0]
-                    int_lit = int(lit)
-                    abs_lit = str(abs(int_lit))
-                    neg_lit = str(-int_lit)
-                    clause.append(lit)
-                    # Check if problem is solvable.
-                    if neg_lit in immutable_vars:
-                        self.output_result('no')
-                    # Collect immutable variables.
-                    immutable_vars.extend(clause)
-                    # Collect variable.
-                    vars_tmp.add(abs_lit)
-                    # Check for pure literals.
-                    if neg_lit not in self.p_lits:
-                        if lit not in self.p_lits and abs_lit not in non_p_lits:
-                            self.p_lits.append(lit)
-                    else:
-                        self.p_lits.remove(neg_lit)
-                        non_p_lits.append(abs_lit)
-                    self.clauses.pop()
                 else:
-                    for lit in eff_parsed:
+                    self.clauses.append(list())
+                    clause = self.clauses[-1]
+                    tautology = False
+                    eff_parsed = parsed[:-1]
+                    # Check for unit clauses.
+                    if len(eff_parsed) == 1:
+                        lit = eff_parsed[0]
                         int_lit = int(lit)
-                        clause.append(lit)
-                        # Collect variable.
                         abs_lit = str(abs(int_lit))
-                        vars_tmp.add(abs_lit)
-                        # Check for tautology.
                         neg_lit = str(-int_lit)
-                        if neg_lit in clause:
-                            tautology = True
+                        clause.append(lit)
+                        # Check if problem is solvable.
+                        if neg_lit in immutable_vars:
+                            self.output_result('no')
+                        # Collect immutable variables.
+                        immutable_vars.extend(clause)
+                        # Collect variable.
+                        vars_tmp.add(abs_lit)
                         # Check for pure literals.
                         if neg_lit not in self.p_lits:
                             if lit not in self.p_lits and abs_lit not in non_p_lits:
@@ -71,9 +51,28 @@ class Solver(object):
                         else:
                             self.p_lits.remove(neg_lit)
                             non_p_lits.append(abs_lit)
-                    # Remove clauses with tautology.
-                    if tautology:
                         self.clauses.pop()
+                    else:
+                        for lit in eff_parsed:
+                            int_lit = int(lit)
+                            clause.append(lit)
+                            # Collect variable.
+                            abs_lit = str(abs(int_lit))
+                            vars_tmp.add(abs_lit)
+                            # Check for tautology.
+                            neg_lit = str(-int_lit)
+                            if neg_lit in clause:
+                                tautology = True
+                            # Check for pure literals.
+                            if neg_lit not in self.p_lits:
+                                if lit not in self.p_lits and abs_lit not in non_p_lits:
+                                    self.p_lits.append(lit)
+                            else:
+                                self.p_lits.remove(neg_lit)
+                                non_p_lits.append(abs_lit)
+                        # Remove clauses with tautology.
+                        if tautology:
+                            self.clauses.pop()
         # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
         self.vars = dict.fromkeys(vars_tmp, [0, True])
         self.imvars = immutable_vars
