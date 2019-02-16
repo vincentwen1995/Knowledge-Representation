@@ -94,6 +94,7 @@ class Solver(object):
         '''
 
         res = False
+        unks = 0
         for lit in clause:
             int_lit = int(lit)
             if int_lit < 0:
@@ -104,8 +105,9 @@ class Solver(object):
                 res = True
                 break
             elif val == 0:
-                res = 'unk'
-                break
+                unks += 1
+        if unks == len(clause):
+            res = 'unk'
         return res
 
     def evalute(self, clauses):
@@ -134,6 +136,12 @@ class Solver(object):
         '''
 
         if flag == 'yes':
-            print('p ')
+            cnt = len(self.vars)
+            print('p cnf {} {}'.format(cnt, cnt))
+            for k in sorted(self.vars.iterkeys()):
+                if self.vars[k][0] < 0:
+                    print('-' + k + ' 0')
+                else:
+                    print(k + ' 0')
         else:
             print('The problem is unsolvable.')
