@@ -108,7 +108,7 @@ class Solver(object):
                 break
             elif val == 0:
                 unks += 1
-        if unks == len(clause):
+        if unks > 0:
             res = 'unk'
         return res
 
