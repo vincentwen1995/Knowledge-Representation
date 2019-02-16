@@ -75,13 +75,56 @@ class Solver(object):
         # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
         self.vars = dict.fromkeys(vars_tmp, [0, True])
         for var in immutable_vars:
-            var_int = int(var)
-            var_ind = str(abs(var_int))
+            int_var = int(var)
+            var_ind = str(abs(int_var))
 
-            if var_int < 0:
+            if int_var < 0:
                 self.vars[var_ind] = [-1, False]
             else:
                 self.vars[var_ind] = [1, False]
+
+    def evaluate_clause(self, clause):
+        '''Evaluate the truth of a clause.
+
+        Arguments:
+            clause {list} -- list of literals
+
+        Returns:
+            bool/str -- truth of the clause (or 'unk')
+        '''
+
+        res = False
+        for lit in clause:
+            int_lit = int(lit)
+            if int_lit < 0:
+                val = -self.vars[str(abs(int_lit))][0]
+            else:
+                val = self.vars[str(abs(int_lit))][0]
+            if val > 0:
+                res = True
+                break
+            elif val == 0:
+                res = 'unk'
+                break
+        return res
+
+    def evalute(self, clauses):
+        '''Evaluate the problem.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            bool/str -- truth of the problem (or 'unk')
+        '''
+
+        res = []
+        for clause in clauses:
+            res_tmp = self.evaluate_clause(clause)
+            if res_tmp == 'unk':
+                return 'unk'
+            res.append(res_tmp)
+        return all(res)
 
     def output_result(self, flag='yes'):
         '''Method for printing the final results.
