@@ -134,6 +134,6 @@ class Solver(object):
         '''
 
         if flag == 'yes':
-            pass
+            print('p ')
         else:
             print('The problem is unsolvable.')
