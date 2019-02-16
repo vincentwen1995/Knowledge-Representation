@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-class Reader(object):
+class Solver(object):
     '''Class for reading the input file.
     '''
 
@@ -9,12 +9,15 @@ class Reader(object):
         self.file = file
 
     def read(self):
+        '''Method for reading the clauses and do initial simplificaitons.
+        '''
+
         # Initialize variables.
         non_p_lits = []
         vars_tmp = set()
+        immutable_vars = []
         self.p_lits = []
         self.clauses = []
-        self.unit_clauses = []
         # Start reading from the file.
         with open(self.file, 'r') as input_file:
             for line in input_file:
@@ -30,15 +33,18 @@ class Reader(object):
                     # Check for unit clauses.
                     if len(eff_parsed) == 1:
                         lit = eff_parsed[0]
-                        clause.append(lit)
-                        # Collect unit clauses.
-                        self.unit_clauses.append(clause)
-                        # Collect variable.
                         int_lit = int(lit)
                         abs_lit = str(abs(int_lit))
+                        neg_lit = str(-int_lit)
+                        clause.append(lit)
+                        # Check if problem is solvable.
+                        if neg_lit in immutable_vars:
+                            output_result(self, 'no')
+                        # Collect immutable variables.
+                        immutable_vars.extend(clause)
+                        # Collect variable.
                         vars_tmp.add(abs_lit)
                         # Check for pure literals.
-                        neg_lit = str(-int_lit)
                         if neg_lit not in self.p_lits:
                             if lit not in self.p_lits and abs_lit not in non_p_lits:
                                 self.p_lits.append(lit)
@@ -66,5 +72,25 @@ class Reader(object):
                         # Remove clauses with tautology.
                         if tautology:
                             self.clauses.pop()
-        # Initialize all collected variables.
-        self.vars = dict.fromkeys(vars_tmp, False)
+        # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
+        self.vars = dict.fromkeys(vars_tmp, [0, True])
+        for var in immutable_vars:
+            var_int = int(var)
+            var_ind = str(abs(var_int))
+
+            if var_int < 0:
+                self.vars[var_ind] = [-1, False]
+            else:
+                self.vars[var_ind] = [1, False]
+
+    def output_result(self, flag='yes'):
+        '''Method for printing the final results.
+
+        Keyword Arguments:
+            flag {str} -- flag to indicate whether there is a solution to the problem (default: {'yes'})
+        '''
+
+        if flag == 'yes':
+            pass
+        else:
+            print('The problem is unsolvable.')
