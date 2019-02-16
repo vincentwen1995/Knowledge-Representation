@@ -85,6 +85,22 @@ class Solver(object):
             else:
                 self.vars[var_ind] = [1, False]
 
+        for var in self.p_lits:
+            int_var = int(var)
+            var_ind = str(abs(int_var))
+
+            if int_var < 0:
+                self.vars[var_ind] = [-1, False]
+            else:
+                self.vars[var_ind] = [1, False]
+
+    def simplify(self, clauses):
+        clauses_tmp = []
+        for clause in clauses:
+            clause_tmp = []
+            for lit in clause:
+                pass
+
     def evaluate_clause(self, clause):
         '''Evaluate the truth of a clause.
 
