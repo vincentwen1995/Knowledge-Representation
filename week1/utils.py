@@ -11,39 +11,42 @@ class Solver(object):
     def read(self):
         '''Method for reading the clauses and do initial simplificaitons.
         '''
-
+        
         # Initialize variables.
         non_p_lits = []
         vars_tmp = set()
-        immutable_vars = []
+        immutable_vars = set()
         self.p_lits = []
         self.clauses = []
+        
         # Start reading from the file.
         with open(self.file, 'r') as input_file:
             for line in input_file:
                 parsed = line.split()
+                
                 # Check whether it is valid line or supplementary line.
                 if parsed[0] == 'p' or parsed[0] == 'c':
                     continue
                 else:
-                    self.clauses.append(list())
-                    clause = self.clauses[-1]
-                    tautology = False
                     eff_parsed = parsed[:-1]
+                    
                     # Check for unit clauses.
                     if len(eff_parsed) == 1:
                         lit = eff_parsed[0]
                         int_lit = int(lit)
                         abs_lit = str(abs(int_lit))
                         neg_lit = str(-int_lit)
-                        clause.append(lit)
+                        
                         # Check if problem is solvable.
                         if neg_lit in immutable_vars:
                             self.output_result('no')
+                        
                         # Collect immutable variables.
-                        immutable_vars.extend(clause)
+                        immutable_vars.add(lit)
+                        
                         # Collect variable.
                         vars_tmp.add(abs_lit)
+                        
                         # Check for pure literals.
                         if neg_lit not in self.p_lits:
                             if lit not in self.p_lits and abs_lit not in non_p_lits:
@@ -51,18 +54,23 @@ class Solver(object):
                         else:
                             self.p_lits.remove(neg_lit)
                             non_p_lits.append(abs_lit)
-                        self.clauses.pop()
                     else:
+                        self.clauses.append(list())
+                        clause = self.clauses[-1]
+                        tautology = False
                         for lit in eff_parsed:
                             int_lit = int(lit)
                             clause.append(lit)
+                            
                             # Collect variable.
                             abs_lit = str(abs(int_lit))
                             vars_tmp.add(abs_lit)
+                            
                             # Check for tautology.
                             neg_lit = str(-int_lit)
                             if neg_lit in clause:
                                 tautology = True
+                            
                             # Check for pure literals.
                             if neg_lit not in self.p_lits:
                                 if lit not in self.p_lits and abs_lit not in non_p_lits:
@@ -70,25 +78,24 @@ class Solver(object):
                             else:
                                 self.p_lits.remove(neg_lit)
                                 non_p_lits.append(abs_lit)
+                        
                         # Remove clauses with tautology.
                         if tautology:
                             self.clauses.pop()
+        
         # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
         self.vars = dict.fromkeys(vars_tmp, [0, True])
         self.imvars = immutable_vars
         for var in immutable_vars:
             int_var = int(var)
             var_ind = str(abs(int_var))
-
             if int_var < 0:
                 self.vars[var_ind] = [-1, False]
             else:
                 self.vars[var_ind] = [1, False]
-
         for var in self.p_lits:
             int_var = int(var)
             var_ind = str(abs(int_var))
-
             if int_var < 0:
                 self.vars[var_ind] = [-1, False]
             else:
@@ -163,3 +170,4 @@ class Solver(object):
                     print(k + ' 0')
         else:
             print('The problem is unsolvable.')
+            exit()
