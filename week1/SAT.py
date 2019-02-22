@@ -3,6 +3,8 @@
 
 import sys
 from utils import DP
+from printSudoku import print_sudoku
+from printSudoku import check_sudoku
 
 
 def main(argv):
@@ -19,7 +21,10 @@ def main(argv):
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
     var = sat_solver.solver(clauses)
-    print(var)
+    truth = [literal for literal, value in var.items() if value == True]
+    print(truth)
+    print_sudoku(truth)
+    check_sudoku(truth)
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ class DP(object):
         
         clauses = self.pure_literals(clauses)
         clauses = self.unit_clauses(clauses)
-        if clauses == False:
+        if [] in clauses:
             return False
         if len(clauses) == 0:
             return self.vars
@@ -47,8 +47,6 @@ class DP(object):
             else:
                 if -variable in clause:
                     clause.remove(-variable)
-                    if len(clause) == 0:
-                        return False
                 new_clauses.append(clause)
         return new_clauses
 
@@ -133,7 +131,5 @@ class DP(object):
                 unit_var.add(clause[0])
         for unit in unit_var:
             clauses = self.remove_clauses(unit, clauses)
-            if clauses == False:
-                return False
         return clauses
             
