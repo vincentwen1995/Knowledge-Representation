@@ -1,1 +1,1 @@
-python SAT.py $1
+python SAT.py $1 $2

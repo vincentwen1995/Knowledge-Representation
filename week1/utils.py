@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import random
 
 class Solver(object):
     '''Class for reading the input file.
@@ -7,15 +7,62 @@ class Solver(object):
 
     def __init__(self, file):
         self.file = file
-        self.clauses = []
+    
+    def solver(self, clauses):
+        '''DP-Solver
+        '''
+        
+        clauses = self.pure_literals(clauses)
+        clauses = self.unit_clauses(clauses)
+        if clauses == False:
+            return False
+        if len(clauses) == 0:
+            return self.vars
+        split_var = self.random_split(clauses)
+        assignment = self.solver(self.remove_clauses(split_var, clauses))
+        print(assignment)
+        if assignment == False:
+            assignment = self.solver(self.remove_clauses(split_var, clauses))
+        return self.vars
+        
+    def random_split(self, clauses):
+        '''Randomly choose a literal to split.
+        '''
+        
+        clause = random.choice(clauses)
+        split = random.choice(clause)
+        return split
+
+    def remove_clauses(self, variable, clauses):
+        '''remove_clauses the clauses list with the given variable.
+        '''
+        
+        new_clauses = []
+        if variable >= 0:
+            self.vars[variable] = True
+        else:
+            self.vars[abs(variable)] = False
+        for clause in clauses:
+            if variable in clause:
+                continue
+            else:
+                if -variable in clause:
+                    clause.remove(-variable)
+                    if len(clause) == 0:
+                        return False
+                new_clauses.append(clause)
+        return new_clauses
 
     def read(self):
         '''Method for reading the clauses and do initial simplificaitons.
         '''
 
+        # Initialize clauses list.
+        clauses = []
+        
         # Initialize variables.
         vars_tmp = set()
-        clauses = set()
+        
         # Start reading from the file.
         with open(self.file, 'r') as input_file:
             for line in input_file:
@@ -34,65 +81,60 @@ class Solver(object):
                         # Collect variable.
                         abs_lit = abs(lit)
                         vars_tmp.add(abs_lit)
-                    clauses.add(list(clause))
+                    clauses.append(list(clause))
 
         # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
         self.vars = dict.fromkeys(vars_tmp, False)
-        self.clauses = list(clauses)
+        return clauses
 
-    def tautology(self):
+    def tautology(self, clauses):
         '''Check and remove tautology.
         '''
-
-        for clause in self.clauses:
-            if len(clause) == 1:
-                continue
+        
+        new_clauses = []
+        check = 1
+        for clause in clauses:
+            for lit in clause:
+                if -lit in clause:
+                    check = 0
+                    break
+            if check == 1:
+                new_clauses.append(clause)
             else:
-                for lit in clause:
-                    if -lit in clause:
-                        self.clauses.remove(clause)
-                        break
+                check = 1
+        return new_clauses
 
-    def pure_literals(self):
+    def pure_literals(self, clauses):
         '''Collect the pure literals.
         '''
 
-        self.p_lits = []
-        non_p_lits = []
-        for clause in self.clauses:
+        p_lits = set()
+        non_p_lits = set()
+        for clause in clauses:
             for lit in clause:
                 neg_lit = -lit
                 abs_lit = abs(lit)
-                if neg_lit not in self.p_lits:
-                    if lit not in self.p_lits and abs_lit not in non_p_lits:
-                        self.p_lits.append(lit)
+                if neg_lit not in p_lits:
+                    if abs_lit not in non_p_lits:
+                        p_lits.add(lit)
                 else:
-                    self.p_lits.remove(neg_lit)
-                    non_p_lits.append(abs_lit)
+                    p_lits.remove(neg_lit)
+                    non_p_lits.add(abs_lit)
+        for lit in p_lits:
+            clauses = self.remove_clauses(lit, clauses)
+        return clauses
 
-    def unit_clauses(self):
+    def unit_clauses(self, clauses):
         '''Collect the variables in the unit clauses.
         '''
 
-        self.unit_var = set()
-        for clause in self.clauses:
+        unit_var = set()
+        for clause in clauses:
             if len(clause) == 1:
-                self.unit_var.add(clause[0])
-
-    def output_result(self, flag='yes'):
-        '''Method for printing the final results.
-
-        Keyword Arguments:
-            flag {str} -- flag to indicate whether there is a solution to the problem (default: {'yes'})
-        '''
-
-        if flag == 'yes':
-            cnt = len(self.vars)
-            print('p cnf {} {}'.format(cnt, cnt))
-            for k in sorted(self.vars.iterkeys()):
-                if self.vars[k]:
-                    print(k + ' 0')
-                else:
-                    print('-' + k + ' 0')
-        else:
-            print('The problem is unsolvable.')
+                unit_var.add(clause[0])
+        for unit in unit_var:
+            clauses = self.remove_clauses(unit, clauses)
+            if clauses == False:
+                return False
+        return clauses
+            
