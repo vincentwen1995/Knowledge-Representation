@@ -21,8 +21,9 @@ def main(argv):
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
     var = sat_solver.solver(clauses)
+    print(var)
     truth = [literal for literal, value in var.items() if value == True]
-    print(truth)
+    print(len(truth))
     print_sudoku(truth)
     check_sudoku(truth)
 

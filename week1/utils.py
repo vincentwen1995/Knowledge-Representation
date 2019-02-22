@@ -1,29 +1,41 @@
 #!/usr/bin/python
 import random
 
+
 class DP(object):
     '''Class for basic David-Putnams Solver
     '''
-
+    
     def __init__(self, file):
         self.file = file
-    
+        self.n = 0
+
     def solver(self, clauses):
         '''DP-Solver
         '''
         
+        self.n = self.n + 1
+        print('start n:', self.n)
+        print('start', clauses)
         clauses = self.pure_literals(clauses)
+        print('after pure', clauses)
         clauses = self.unit_clauses(clauses)
+        print('after unit', clauses)
         if [] in clauses:
             return False
         if len(clauses) == 0:
+            print('success', self.vars)
             return self.vars
         split_var = self.random_split(clauses)
+        print(split_var, clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
+        print('after try', clauses)
+        print('after n:', self.n)
         if assignment == False:
-            assignment = self.solver(self.remove_clauses(split_var, clauses))
+            print('new try', clauses)
+            assignment = self.solver(self.remove_clauses(-split_var, clauses))
         return self.vars
-        
+
     def random_split(self, clauses):
         '''Randomly choose a literal to split.
         '''
@@ -53,7 +65,7 @@ class DP(object):
     def read(self):
         '''Method for reading the clauses and do initial simplificaitons.
         '''
-
+        
         # Initialize clauses list.
         clauses = []
         
@@ -66,7 +78,7 @@ class DP(object):
                 parsed = line.split()
 
                 # Check whether it is valid line or supplementary line.
-                if parsed[0] == 'p' or parsed[0] == 'c':
+                if not parsed or parsed[0] == 'p' or parsed[0] == 'c':
                     continue
                 else:
                     eff_parsed = parsed[:-1]
@@ -104,7 +116,7 @@ class DP(object):
     def pure_literals(self, clauses):
         '''Collect the pure literals.
         '''
-
+        
         p_lits = set()
         non_p_lits = set()
         for clause in clauses:
@@ -124,7 +136,7 @@ class DP(object):
     def unit_clauses(self, clauses):
         '''Collect the variables in the unit clauses.
         '''
-
+        
         unit_var = set()
         for clause in clauses:
             if len(clause) == 1:
@@ -132,4 +144,3 @@ class DP(object):
         for unit in unit_var:
             clauses = self.remove_clauses(unit, clauses)
         return clauses
-            
