@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import random
 
-class Solver(object):
-    '''Class for reading the input file.
+class DP(object):
+    '''Class for basic David-Putnams Solver
     '''
 
     def __init__(self, file):
@@ -20,7 +20,6 @@ class Solver(object):
             return self.vars
         split_var = self.random_split(clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        print(assignment)
         if assignment == False:
             assignment = self.solver(self.remove_clauses(split_var, clauses))
         return self.vars
