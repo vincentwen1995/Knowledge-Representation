@@ -9,7 +9,16 @@ class DP(object):
     def __init__(self, file):
         self.file = file
         self.n = 0
-
+        self.split = 0
+        
+    def split_choice(self, clauses):
+        if self.split == 0:
+            return self.random_split(clauses)
+        elif self.split == 1:
+            raise NotImplementedError
+        elif self.split == 2:
+            raise NotImplementedError
+    
     def solver(self, clauses):
         '''DP-Solver
         '''
@@ -26,7 +35,7 @@ class DP(object):
         if len(clauses) == 0:
             print('success', self.vars)
             return self.vars
-        split_var = self.random_split(clauses)
+        split_var = self.split_choice(clauses)
         print(split_var, clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
         print('after try', clauses)
@@ -141,6 +150,9 @@ class DP(object):
         for clause in clauses:
             if len(clause) == 1:
                 unit_var.add(clause[0])
-        for unit in unit_var:
-            clauses = self.remove_clauses(unit, clauses)
+        while len(unit_var) > 0:
+            for unit in unit_var:
+                clauses = self.remove_clauses(unit, clauses)
+            unit_var = set()
+            clauses = self.unit_clauses(clauses)
         return clauses
