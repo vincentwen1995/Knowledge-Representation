@@ -12,11 +12,15 @@ class DP(object):
         self.split = 0
         
     def split_choice(self, clauses):
-        if self.split == 0:
+        if self.split == 1:
             return self.random_split(clauses)
-        elif self.split == 1:
-            raise NotImplementedError
         elif self.split == 2:
+            raise NotImplementedError
+        elif self.split == 3:
+            raise NotImplementedError
+        elif self.split == 4:
+            raise NotImplementedError
+        elif self.split == 5:
             raise NotImplementedError
     
     def solver(self, clauses):
@@ -38,8 +42,8 @@ class DP(object):
         split_var = self.split_choice(clauses)
         print(split_var, clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        print('after try', clauses)
         print('after n:', self.n)
+        print('after', clauses)
         if assignment == False:
             print('new try', clauses)
             assignment = self.solver(self.remove_clauses(-split_var, clauses))

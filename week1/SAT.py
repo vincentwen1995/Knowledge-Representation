@@ -10,16 +10,22 @@ from printSudoku import check_sudoku
 def main(argv):
     if argv[0] == '-S1':
         sat_solver = DP(argv[1])
-        sat_solver.split = 0
+        sat_solver.split = 1
     elif argv[0] == '-S2':
         sat_solver = DP(argv[1])
-        sat_solver.split = 1
+        sat_solver.split = 2
     elif argv[0] == '-S3':
         sat_solver = DP(argv[1])
-        sat_solver.split = 2
+        sat_solver.split = 3
+    elif argv[0] == '-S4':
+        sat_solver = DP(argv[1])
+        sat_solver.split = 4
+    elif argv[0] == '-S5':
+        sat_solver = DP(argv[1])
+        sat_solver.split = 5
     else:
         print('WARNING: your input command should be strictly of the following format:')
-        print('sh SAT.sh -Sn inputfile (where n = 1, 2 or 3)')
+        print('sh SAT.sh -Sn inputfile (where n = 1 ~ 5)')
         exit()
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
