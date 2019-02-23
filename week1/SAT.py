@@ -30,9 +30,11 @@ def main(argv):
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
     var = sat_solver.solver(clauses)
-    print(var)
+    if var == False:
+        print('Oops, the problem is not solvable...')
+        exit()
     truth = [literal for literal, value in var.items() if value == True]
-    print(len(truth))
+    print('The number of TRUE variable is:', len(truth))
     print_sudoku(truth)
     check_sudoku(truth)
 

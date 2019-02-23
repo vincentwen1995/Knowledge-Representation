@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random
+import copy
 
 
 class DP(object):
@@ -8,7 +9,6 @@ class DP(object):
     
     def __init__(self, file):
         self.file = file
-        self.n = 0
         self.split = 0
         
     def split_choice(self, clauses):
@@ -27,25 +27,18 @@ class DP(object):
         '''DP-Solver
         '''
         
-        self.n = self.n + 1
-        print('start n:', self.n)
-        print('start', clauses)
         clauses = self.pure_literals(clauses)
-        print('after pure', clauses)
         clauses = self.unit_clauses(clauses)
-        print('after unit', clauses)
         if [] in clauses:
             return False
         if len(clauses) == 0:
-            print('success', self.vars)
             return self.vars
         split_var = self.split_choice(clauses)
-        print(split_var, clauses)
+        tmp = copy.deepcopy(clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        print('after n:', self.n)
-        print('after', clauses)
         if assignment == False:
-            print('new try', clauses)
+            print('Backtracking...')
+            clauses = copy.deepcopy(tmp)
             assignment = self.solver(self.remove_clauses(-split_var, clauses))
         return self.vars
 
