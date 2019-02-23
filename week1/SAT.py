@@ -24,10 +24,10 @@ def main(argv):
         sat_solver = DP(argv[1])
         sat_solver.split = 5
     else:
-        raise Exception('Incorrect input: your input command should be strictly of the following format:')
+        print('Incorrect input: your input command should be strictly of the following format:')
         print("for Linux: 'sh SAT.sh -Sn inputfile' (where n = 1 ~ 5)")
         print("for Windows: 'SAT.bat -Sn inputfile' (where n = 1 ~ 5)")
-
+        exit()
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
     var = sat_solver.solver(clauses)
