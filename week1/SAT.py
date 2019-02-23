@@ -9,23 +9,23 @@ from printSudoku import check_sudoku
 
 def main(argv):
     if argv[0] == '-S1':
-        print('The strategy you choose is: Random Split.')
+        print('The splitting strategy you choose is: Random Split Heuristic.')
         sat_solver = DP(argv[1])
         sat_solver.split = 1
     elif argv[0] == '-S2':
-        print('The strategy you choose is: (Deterministic) Jeroslow-Wang Split.')
+        print('The splitting strategy you choose is: (Deterministic) Jeroslow-Wang Heuristic.')
         sat_solver = DP(argv[1])
         sat_solver.split = 2
     elif argv[0] == '-S3':
-        print('The strategy you choose is: Probabilistic Jeroslow-Wang Split.')
+        print('The splitting strategy you choose is: Probabilistic Jeroslow-Wang Heuristic.')
         sat_solver = DP(argv[1])
         sat_solver.split = 3
     elif argv[0] == '-S4':
-        print('The strategy you choose is: (Deterministic) DLIS.')
+        print('The splitting strategy you choose is: (Deterministic) DLIS Heuristic.')
         sat_solver = DP(argv[1])
         sat_solver.split = 4
     elif argv[0] == '-S5':
-        print('The strategy you choose is: Probabilistic DLIS.')
+        print('The splitting strategy you choose is: Probabilistic DLIS Heuristic.')
         sat_solver = DP(argv[1])
         sat_solver.split = 5
     else:
@@ -34,7 +34,7 @@ def main(argv):
         print("for Linux: 'sh SAT.sh -Sn inputfile'")
         print("for Windows: 'SAT.bat -Sn inputfile'")
         print('--------------------')
-        print("Note: n can be 1 ~ 5, which corresponds to 5 different splitting strategies.")
+        print("Note: n can be 1 ~ 5, which corresponds to 5 different splitting heuristics.")
         exit()
     print('--------------------')
     print('Processing...')
