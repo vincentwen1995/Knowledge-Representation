@@ -11,6 +11,8 @@ class DP(object):
     def __init__(self, file):
         self.file = file
         self.split = 0
+        self.n = 0
+        self.modified = 0
 
     def split_choice(self, clauses):
         '''Select heuristics to split.
@@ -43,18 +45,31 @@ class DP(object):
             dict -- dictionary of variables with assigned values
         '''
 
+        self.n = self.n + 1
+        print('start n:', self.n)
+        print('start:', clauses)
         clauses = self.pure_literals(clauses)
+        print('after pure:', clauses)
         clauses = self.unit_clauses(clauses)
+        print('after unit:', clauses)
         if [] in clauses:
             return False
         if len(clauses) == 0:
+            print('success!', self.vars)
             return self.vars
         split_var = self.split_choice(clauses)
-        tmp = copy.deepcopy(clauses)
+        print(split_var, clauses)
+        if self.modified == 0:
+            tmp = copy.deepcopy(clauses)
+            self.modified = 1
+        print('tmp:', tmp)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        if assignment is False:
-            print('Backtracking...')
-            clauses = copy.deepcopy(tmp)
+        print('after n:', self.n)
+        print('after:', clauses, tmp)
+        if assignment == False:
+            clauses = tmp
+            self.modified = 0
+            print('new try:', clauses)
             assignment = self.solver(self.remove_clauses(-split_var, clauses))
         return self.vars
 
