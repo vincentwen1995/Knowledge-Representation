@@ -11,8 +11,7 @@ class DP(object):
     def __init__(self, file):
         self.file = file
         self.split = 0
-        self.n = 0
-        self.modified = 0
+        self.count = 0
 
     def split_choice(self, clauses):
         '''Select heuristics to split.
@@ -45,32 +44,30 @@ class DP(object):
             dict -- dictionary of variables with assigned values
         '''
 
-        self.n = self.n + 1
-        print('start n:', self.n)
-        print('start:', clauses)
+        # print('|START count:', self.count)
+        # print('start:', clauses)
         clauses = self.pure_literals(clauses)
-        print('after pure:', clauses)
+        # print('after pure:', clauses)
         clauses = self.unit_clauses(clauses)
-        print('after unit:', clauses)
+        # print('after unit:', clauses)
         if [] in clauses:
+            # print('false')
             return False
         if len(clauses) == 0:
-            print('success!', self.vars)
+            # print('success!')
             return self.vars
         split_var = self.split_choice(clauses)
-        print(split_var, clauses)
-        if self.modified == 0:
-            tmp = copy.deepcopy(clauses)
-            self.modified = 1
-        print('tmp:', tmp)
+        self.count += 1
+        # print(split_var)
+        tmp = copy.deepcopy(clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        print('after n:', self.n)
-        print('after:', clauses, tmp)
-        if assignment == False:
-            clauses = tmp
-            self.modified = 0
-            print('new try:', clauses)
+        if assignment is False:
+            # print('backtracking...')
+            self.count += 1
+            clauses = copy.deepcopy(tmp)
             assignment = self.solver(self.remove_clauses(-split_var, clauses))
+        if assignment is False:
+            return False
         return self.vars
 
     def random_split(self, clauses):
@@ -98,6 +95,33 @@ class DP(object):
             list -- updated list of clauses
         '''
 
+        new_clauses = []
+        if variable >= 0:
+            self.vars[variable] = True
+        else:
+            self.vars[abs(variable)] = False
+        for clause in clauses:
+            if variable in clause:
+                continue
+            else:
+                if -variable in clause:
+                    clause.remove(-variable)
+                new_clauses.append(clause)
+        return new_clauses
+
+    def remove_clauses_testing_only(self, variable, clauses):
+        '''Update the list of clauses with the given variable assigned.
+
+        Arguments:
+            variable {int} -- variable with assgined value
+            clauses {list} -- list of clauses
+
+        Returns:
+            list -- updated list of clauses
+        '''
+
+        print('variable:', variable)
+        print('number of clauses:', len(clauses))
         new_clauses = []
         if variable >= 0:
             self.vars[variable] = True
@@ -145,7 +169,7 @@ class DP(object):
                         vars_tmp.add(abs_lit)
                     clauses.append(list(clause))
 
-        # Initialize all collected variables, e.g. {'115': [0, False] ...} - where [truth_val, mutability]
+        # Initialize all collected variables, e.g. {'115': [False] ...} - where [truth_val]
         self.vars = dict.fromkeys(vars_tmp, False)
         return clauses
 
