@@ -29,9 +29,9 @@ class DP(object):
         elif self.split == 3:
             return self.JW_prob_split(clauses)
         elif self.split == 4:
-            raise NotImplementedError
+            return self.DLIS_det_split(clauses)
         elif self.split == 5:
-            raise NotImplementedError
+            return self.DLIS_prob_split(clauses)
 
     def solver(self, clauses):
         '''Main method of solver.
@@ -251,5 +251,81 @@ class DP(object):
         split = split[0]
 
         split = random.choices([split, -split], weights=[J[split], J[-split]], k=1)
+        split = split[0]
+        return split
+
+    def DLIS_det_split(self, clauses):
+        '''Use deterministic DLIS heuristics to split variable.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- selected variable to split
+        '''
+
+        C_p = defaultdict(int)
+        C_n = defaultdict(int)
+        for clause in clauses:
+            for lit in clause:
+                if lit > 0:
+                    C_p[lit] += 1
+                else:
+                    C_n[lit] += 1
+        max_pair_p = [0, -1]
+        for k, v in C_p.items():
+            if v > max_pair_p[1]:
+                max_pair_p = [k, v]
+
+        max_pair_n = [0, -1]
+        for k, v in C_n.items():
+            if v > max_pair_n[1]:
+                max_pair_n = [k, v]
+
+        if max_pair_p[1] > max_pair_n[1]:
+            return max_pair_p[0]
+        else:
+            return max_pair_n[0]
+
+    def DLIS_prob_split(self, clauses):
+        '''Use probabilistic DLIS heuristics to split variable.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- selected variable to split
+        '''
+
+        C_p = defaultdict(int)
+        C_n = defaultdict(int)
+        for clause in clauses:
+            for lit in clause:
+                if lit > 0:
+                    C_p[lit] += 1
+                else:
+                    C_n[lit] += 1
+
+        choices_p = []
+        weights_p = []
+        for k, v in C_p.items():
+            choices_p.append(k)
+            weights_p.append(v)
+
+        choices_n = []
+        weights_n = []
+        for k, v in C_n.items():
+            choices_n.append(k)
+            weights_n.append(v)
+
+        choice_p = random.choices(choices_p, weights=weights_p, k=1)
+        choice_p = choice_p[0]
+        val_p = C_p[choice_p]
+
+        choice_n = random.choices(choices_n, weights=weights_n, k=1)
+        choice_n = choice_n[0]
+        val_n = C_n[choice_n]
+
+        split = random.choices([choice_p, choice_n], weights=[val_p, val_n], k=1)
         split = split[0]
         return split
