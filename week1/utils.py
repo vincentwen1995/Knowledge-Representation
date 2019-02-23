@@ -1,32 +1,48 @@
 #!/usr/bin/python
 import random
 import copy
+from collections import defaultdict
 
 
 class DP(object):
-    '''Class for basic David-Putnams Solver
+    '''Class for David-Putnam solver.
     '''
-    
+
     def __init__(self, file):
         self.file = file
         self.split = 0
-        
+
     def split_choice(self, clauses):
+        '''Select heuristics to split.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- variable to split
+        '''
+
         if self.split == 1:
             return self.random_split(clauses)
         elif self.split == 2:
-            raise NotImplementedError
+            return self.JW_det_split(clauses)
         elif self.split == 3:
-            raise NotImplementedError
+            return self.JW_prob_split(clauses)
         elif self.split == 4:
             raise NotImplementedError
         elif self.split == 5:
             raise NotImplementedError
-    
+
     def solver(self, clauses):
-        '''DP-Solver
+        '''Main method of solver.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            dict -- dictionary of variables with assigned values
         '''
-        
+
         clauses = self.pure_literals(clauses)
         clauses = self.unit_clauses(clauses)
         if [] in clauses:
@@ -36,24 +52,37 @@ class DP(object):
         split_var = self.split_choice(clauses)
         tmp = copy.deepcopy(clauses)
         assignment = self.solver(self.remove_clauses(split_var, clauses))
-        if assignment == False:
+        if assignment is False:
             print('Backtracking...')
             clauses = copy.deepcopy(tmp)
             assignment = self.solver(self.remove_clauses(-split_var, clauses))
         return self.vars
 
     def random_split(self, clauses):
-        '''Randomly choose a literal to split.
+        '''Random splitting heuristic.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- variable to split
         '''
-        
+
         clause = random.choice(clauses)
         split = random.choice(clause)
         return split
 
     def remove_clauses(self, variable, clauses):
-        '''remove_clauses the clauses list with the given variable.
+        '''Update the list of clauses with the given variable assigned.
+
+        Arguments:
+            variable {int} -- variable with assgined value
+            clauses {list} -- list of clauses
+
+        Returns:
+            list -- updated list of clauses
         '''
-        
+
         new_clauses = []
         if variable >= 0:
             self.vars[variable] = True
@@ -69,15 +98,18 @@ class DP(object):
         return new_clauses
 
     def read(self):
-        '''Method for reading the clauses and do initial simplificaitons.
+        '''Method for reading the clauses from the input file.
+
+        Returns:
+            list -- list of clauses
         '''
-        
+
         # Initialize clauses list.
         clauses = []
-        
+
         # Initialize variables.
         vars_tmp = set()
-        
+
         # Start reading from the file.
         with open(self.file, 'r') as input_file:
             for line in input_file:
@@ -103,9 +135,12 @@ class DP(object):
         return clauses
 
     def tautology(self, clauses):
-        '''Check and remove tautology.
+        '''Check and remove tautology from the list of clauses.
+
+        Returns:
+            list -- list of clauses
         '''
-        
+
         new_clauses = []
         check = 1
         for clause in clauses:
@@ -120,9 +155,12 @@ class DP(object):
         return new_clauses
 
     def pure_literals(self, clauses):
-        '''Collect the pure literals.
+        '''Collect and remove the pure literals from the list of clauses.
+
+        Returns:
+            list -- list of clauses
         '''
-        
+
         p_lits = set()
         non_p_lits = set()
         for clause in clauses:
@@ -140,9 +178,12 @@ class DP(object):
         return clauses
 
     def unit_clauses(self, clauses):
-        '''Collect the variables in the unit clauses.
+        '''Collect and remove unit clauses from the list of clauses.
+
+        Returns:
+            list -- list of clauses
         '''
-        
+
         unit_var = set()
         for clause in clauses:
             if len(clause) == 1:
@@ -153,3 +194,62 @@ class DP(object):
             unit_var = set()
             clauses = self.unit_clauses(clauses)
         return clauses
+
+    def JW_det_split(self, clauses):
+        '''Use deterministic Jeroslow-Wang heuristics to split variable.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- selected variable to split
+        '''
+
+        J = defaultdict(int)
+        for clause in clauses:
+            clause_len = len(clause)
+            for lit in clause:
+                J[lit] += 2 ** (-clause_len)
+
+        max_pair = [-1, 0]
+        for k in J.keys():
+            sum_J = J[k] + J[-k]
+            if sum_J > max_pair[1] and max_pair[0] != -k:
+                max_pair = [k, sum_J]
+
+        split = abs(max_pair[0])
+        if J[split] >= J[-split]:
+            return split
+        else:
+            return -split
+
+    def JW_prob_split(self, clauses):
+        '''Use probabilistic Jeroslow-Wang heuristics to split variable.
+
+        Arguments:
+            clauses {list} -- list of clauses
+
+        Returns:
+            int -- selected variable to split
+        '''
+
+        J = defaultdict(int)
+        for clause in clauses:
+            clause_len = len(clause)
+            for lit in clause:
+                J[lit] += 2 ** (-clause_len)
+
+        choices = []
+        vals = []
+        for k, v in J.items():
+            lit = abs(k)
+            if lit not in choices:
+                choices.append(lit)
+                vals.append(J[k] + J[-k])
+
+        split = random.choices(choices, weights=vals, k=1)
+        split = split[0]
+
+        split = random.choices([split, -split], weights=[J[split], J[-split]], k=1)
+        split = split[0]
+        return split

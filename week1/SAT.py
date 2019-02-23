@@ -24,16 +24,17 @@ def main(argv):
         sat_solver = DP(argv[1])
         sat_solver.split = 5
     else:
-        print('WARNING: your input command should be strictly of the following format:')
-        print('sh SAT.sh -Sn inputfile (where n = 1 ~ 5)')
-        exit()
+        raise Exception('Incorrect input: your input command should be strictly of the following format:')
+        print("for Linux: 'sh SAT.sh -Sn inputfile' (where n = 1 ~ 5)")
+        print("for Windows: 'SAT.bat -Sn inputfile' (where n = 1 ~ 5)")
+
     clauses = sat_solver.read()
     clauses = sat_solver.tautology(clauses)
     var = sat_solver.solver(clauses)
-    if var == False:
+    if var is False:
         print('Oops, the problem is not solvable...')
         exit()
-    truth = [literal for literal, value in var.items() if value == True]
+    truth = [literal for literal, value in var.items() if value is True]
     print('The number of TRUE variable is:', len(truth))
     print_sudoku(truth)
     check_sudoku(truth)
