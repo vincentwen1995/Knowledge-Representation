@@ -14,7 +14,7 @@ class DP(object):
         self.count = 0
 
     def split_choice(self, clauses):
-        '''Select heuristics to split.
+        '''Select a heuristic to split.
 
         Arguments:
             clauses {list} -- list of clauses
@@ -235,7 +235,7 @@ class DP(object):
         return clauses
 
     def JW_det_split(self, clauses):
-        '''Use deterministic Jeroslow-Wang heuristics to split variable.
+        '''Use deterministic Jeroslow-Wang heuristic to split variable.
 
         Arguments:
             clauses {list} -- list of clauses
@@ -263,7 +263,7 @@ class DP(object):
             return -split
 
     def JW_prob_split(self, clauses):
-        '''Use probabilistic Jeroslow-Wang heuristics to split variable.
+        '''Use probabilistic Jeroslow-Wang heuristic to split variable.
 
         Arguments:
             clauses {list} -- list of clauses
@@ -294,7 +294,7 @@ class DP(object):
         return split
 
     def DLIS_det_split(self, clauses):
-        '''Use deterministic DLIS heuristics to split variable.
+        '''Use deterministic DLIS heuristic to split variable.
 
         Arguments:
             clauses {list} -- list of clauses
@@ -327,7 +327,7 @@ class DP(object):
             return max_pair_n[0]
 
     def DLIS_prob_split(self, clauses):
-        '''Use probabilistic DLIS heuristics to split variable.
+        '''Use probabilistic DLIS heuristic to split variable.
 
         Arguments:
             clauses {list} -- list of clauses
