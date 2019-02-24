@@ -23,10 +23,10 @@ def main():
                     index_cnt = 0
                     for char in line:
                         if char != '.' and char != '\n':
-                            i = int(index_cnt / 9)
+                            i = index_cnt // 9
                             j = index_cnt % 9
-                            outputs.append('{}{}'.format(i + 1, j + 1) + char + ' 0\n')
-                            index_cnt += 1
+                            outputs.append('{}{}{}'.format(i + 1, j + 1, char) + ' 0\n')
+                        index_cnt += 1
                     outputs.extend(rules[1:])
                     with open(file_dir + '/test_' + str(output_count) + '.txt', 'w+') as output_file:
                         output_file.writelines(outputs)
