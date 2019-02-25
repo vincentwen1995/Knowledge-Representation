@@ -15,7 +15,10 @@ def main():
             filenames = np.random.choice(filenames, samples, False)
             for file in filenames:
                 src_file = os.path.join(test_dir, dirname, file)
-                dest_file = os.path.join(test_dir, 'samples', dirname, file)
+                dest_dir = os.path.join(test_dir, 'samples', dirname)
+                if not os.path.exists(dest_dir):
+                    os.makedirs(dest_dir)
+                dest_file = os.path.join(dest_dir, file)
                 copy(src_file, dest_file)
 
 

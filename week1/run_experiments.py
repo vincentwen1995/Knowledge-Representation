@@ -49,11 +49,11 @@ def main():
                 statistics[i, j] = sat_solver.count
                 j += 1
 
-            with open('./experiment_s{}.csv'.format(s), 'a', newline='') as csv_file:
-                writer = csv.writer(csv_file)
-                writer.writerow(statistics[i, :].tolist())
+        with open('./experiment_s{}.csv'.format(s), 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(statistics[i, :].tolist())
 
-            i += 1
+        i += 1
 
 
 if __name__ == '__main__':
