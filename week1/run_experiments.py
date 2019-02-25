@@ -5,13 +5,15 @@ from utils import DP
 
 
 def main():
-    base_dirname = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests')
+    base_dirname = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tests', 'samples')
     dirnames = [f.path for f in os.scandir(base_dirname) if f.is_dir()]
-    testcases = 22012
+
+    samples = 30
     reps = 5
+    testcases = samples * len(dirnames)
 
     # Choose strategy. (1 - 5)
-    s = 1
+    s = 2
 
     if s == 2 or s == 4:
         repetition = 1
@@ -20,14 +22,18 @@ def main():
         repetition = reps
         rows = reps
 
+    with open('./experiment_s{}.csv'.format(s), 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+
     statistics = np.empty((rows, testcases), dtype=np.float)
 
-    csv_rows = []
     i = 0
     print('Strategy {}:'.format(s))
-    csv_rows.append(['Strategy {}'.format(s)])
     for i_r in np.arange(repetition):
         print('Repetition: {}'.format(i_r + 1))
+        with open('./experiment_s{}.csv'.format(s), 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(['Repetition: {}'.format(i_r + 1)])
         j = 0
         for dirname in dirnames:
             filenames = os.listdir(dirname)
@@ -42,12 +48,12 @@ def main():
                 var = sat_solver.solver(clauses)
                 statistics[i, j] = sat_solver.count
                 j += 1
-        csv_rows.append(statistics[i, :].tolist())
-        i += 1
 
-    with open('./experiment_s{}.csv'.format(s), 'w', newline='') as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerows(csv_rows)
+            with open('./experiment_s{}.csv'.format(s), 'a', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(statistics[i, :].tolist())
+
+            i += 1
 
 
 if __name__ == '__main__':
