@@ -13,7 +13,7 @@ def main():
     testcases = samples * len(dirnames)
 
     # Choose strategy. (1 - 5)
-    s = 2
+    s = 5
 
     if s == 2 or s == 4:
         repetition = 1
