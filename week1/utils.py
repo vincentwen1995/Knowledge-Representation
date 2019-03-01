@@ -390,5 +390,5 @@ class DP(object):
                 else:
                     assignments.append(str(-k) + ' 0\n')
             with open(output_file, 'w') as output:
-                output.write('p cnf 999 12016\n')
+                output.write('p cnf {} {}\n'.format(len(vars), len(vars)))
                 output.writelines(assignments)
