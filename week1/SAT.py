@@ -3,8 +3,6 @@
 
 import sys
 from utils import DP
-from printSudoku import print_sudoku
-from printSudoku import check_sudoku
 
 
 def main(argv):
@@ -46,12 +44,9 @@ def main(argv):
     print('--------------------')
     if var is False:
         print('Oops, the problem is not solvable...')
-        exit()
-    truth = [literal for literal, value in var.items() if value is True]
-    print('The number of splitting + backtracking is:', sat_solver.count)
-    # print('The number of TRUE variable is:', len(truth))
-    print_sudoku(truth)
-    check_sudoku(truth)
+        sat_solver.output_results()
+    else:
+        sat_solver.output_results(var)
 
 
 if __name__ == '__main__':

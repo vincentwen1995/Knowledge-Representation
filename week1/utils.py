@@ -5,7 +5,7 @@ from collections import defaultdict
 
 
 class DP(object):
-    '''Class for David-Putnam solver.
+    '''Class for Davis-Putnam solver.
     '''
 
     def __init__(self, file):
@@ -368,3 +368,27 @@ class DP(object):
         split = random.choices([choice_p, choice_n], weights=[val_p, val_n], k=1)
         split = split[0]
         return split
+
+    def output_results(self, vars=None):
+        '''Method for outputting the results into input_filename.out.
+
+        Keyword Arguments:
+            vars {dict} -- dictionary to store the variables with their assignments (default: {None})
+        '''
+
+        input_file_name = self.file.split('/')
+        input_file_name = input_file_name[-1]
+        output_file = input_file_name[:-4] + '.out'
+        if vars is None:
+            with open(output_file, 'w') as output:
+                output.write('')
+        else:
+            assignments = []
+            for k, v in vars.items():
+                if v:
+                    assignments.append(str(k) + ' 0\n')
+                else:
+                    assignments.append(str(-k) + ' 0\n')
+            with open(output_file, 'w') as output:
+                output.write('p cnf 999 12016\n')
+                output.writelines(assignments)

@@ -9,7 +9,7 @@ def main():
     dirnames = [f.path for f in os.scandir(base_dirname) if f.is_dir()]
 
     samples = 30
-    reps = 5
+    reps = 30
     testcases = samples * len(dirnames)
 
     # Choose strategy. (1 - 5)
