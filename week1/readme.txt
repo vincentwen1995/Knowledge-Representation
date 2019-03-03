@@ -1,3 +1,5 @@
+Requirements: Python 3, numpy
+
 For Windows: 
 Run "SAT.bat -Sn input_file.txt" in command prompt.
 For Unix based systems:
@@ -9,3 +11,5 @@ S2: Deterministic Two-Sided Jeroslow-Wang Heuristic
 S3: Probablisitic Two-Sided Jeroslow-Wang Heuristic
 S4: Deterministic DLIS Heuristic
 S5: Probabilistic DLIS Heuristic
+
+For encoding test cases in DIMACS format and sample from different categories, first run translate_examples.py under tests/ and then run samples_tests.py.
