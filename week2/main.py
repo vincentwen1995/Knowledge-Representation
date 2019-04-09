@@ -1,4 +1,4 @@
-from utils import State
+from utils import State, Flow
 
 
 def main():
@@ -36,17 +36,19 @@ def main():
     # print(scenario)
 
     scenario_quantities = (0, 1, 0, 0, 0, 0)
-    scenario = State(0, *scenario_quantities)
+    scenario = State(0, -1, *scenario_quantities)
     print(scenario)
 
     test_quantities = (0, 0, 0, 0, 0, 0)
-    test = State(1, *test_quantities)
+    test = State(1, -1, *test_quantities)
 
     test_quantities_2 = (0, 1, 0, 0, 0, 0)
-    test_2 = State(2, *test_quantities_2)
+    test_2 = State(2, -1, *test_quantities_2)
 
     print(test == scenario)
     print(test_2 == scenario)
+
+    solver = Flow(scenario)
 
 
 if __name__ == '__main__':
