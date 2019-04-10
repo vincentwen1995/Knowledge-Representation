@@ -219,6 +219,7 @@ class State:
 
     @staticmethod
     def check_influence(state, potential_state):
+
         if state.inflow_mag >= state.outflow_mag and \
                 state.inflow_mag <= potential_state.inflow_mag and \
                 state.outflow_mag >= potential_state.outflow_mag and \
@@ -226,6 +227,29 @@ class State:
             if potential_state.vol_der < state.vol_der:
                 return False
 
+        return True
+
+    @staticmethod
+    def check_max_clipping(potential_state):
+        # When the volume magnitude is max, the derivative should not be +.
+        if potential_state.vol_mag == State.vol_qs[2] and potential_state.vol_der == State.der_qs[2]:
+            return False
+        # When the outflow magnitude is max, the derivative should not be +.
+        if potential_state.outflow_mag == State.outflow_qs[2] and potential_state.outflow_der == State.der_qs[2]:
+            return False
+        return True
+
+    @staticmethod
+    def check_min_clipping(potential_state):
+        # When the inflow magnitude is 0, the derivative should not be -.
+        if potential_state.inflow_mag == State.inflow_qs[0] and potential_state.inflow_der == State.der_qs[0]:
+            return False
+        # When the volume magnitude is 0, the derivative should not be -.
+        if potential_state.vol_mag == State.vol_qs[0] and potential_state.vol_der == State.der_qs[0]:
+            return False
+        # When the outflow magnitude is 0, the derivative should not be -.
+        if potential_state.outflow_mag == State.outflow_qs[0] and potential_state.outflow_der == State.der_qs[0]:
+            return False
         return True
 
     @staticmethod

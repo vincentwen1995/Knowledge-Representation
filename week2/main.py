@@ -67,7 +67,9 @@ def main():
         # print('potential_perm: \n')
         # print(potential_perm)
         potential_state = State(0, 3, *potential_perm)
-        if State.check_influence(test, potential_state):
+        if State.check_influence(test, potential_state) and \
+                State.check_max_clipping(potential_state) and \
+                State.check_min_clipping(potential_state):
             continue
         else:
             a.remove(potential_perm)
