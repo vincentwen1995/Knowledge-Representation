@@ -224,7 +224,6 @@ class State:
                 state.outflow_mag >= potential_state.outflow_mag and \
                 potential_state.inflow_der >= potential_state.outflow_der:
             if potential_state.vol_der < state.vol_der:
-                print(potential_state)
                 return False
 
         return True
