@@ -71,6 +71,7 @@ def main():
             continue
         else:
             a.remove(potential_perm)
+
     print('All possible combinations: ')
     print(a)
     print(len(a))

@@ -7,7 +7,7 @@ class State:
     outflow_qs = (0, 1, 2)
     vol_qs = (0, 1, 2)
 
-    def __init__(self, id, parent_id, inflow_mag, inflow_der, outflow_mag, outflow_der, vol_mag, vol_der):
+    def __init__(self, id, parent_id, inflow_mag, inflow_der, vol_mag, vol_der, outflow_mag, outflow_der):
         self.id = id
         self.parent_id = parent_id
         self.inflow_mag = inflow_mag
@@ -224,6 +224,7 @@ class State:
                 state.outflow_mag >= potential_state.outflow_mag and \
                 potential_state.inflow_der >= potential_state.outflow_der:
             if potential_state.vol_der < state.vol_der:
+                print(potential_state)
                 return False
 
         return True
