@@ -49,10 +49,15 @@ def main():
     outflow_ders = State.propagate_vol_der(test)
     outflow_mags = State.propagate_vol_mag(test)
 
+    print('Inflow Magnitudes: ')
     print(inflow_mags)
+    print('Volume Derivatives: ')
     print(vol_ders)
+    print('Volume Magnitudes: ')
     print(vol_mags)
+    print('Outflow Derivatives')
     print(outflow_ders)
+    print('Outflow Magnitudes: ')
     print(outflow_mags)
 
 
