@@ -265,7 +265,25 @@ class State:
 
     @staticmethod
     def check_continuity(state, potential_state):
-        pass
+        if abs(potential_state.inflow_mag - state.inflow_mag) > 1:
+            return False
+        if abs(potential_state.inflow_der - state.inflow_der) > 1:
+            return False
+        if abs(potential_state.vol_mag - state.vol_mag) > 1:
+            return False
+        if abs(potential_state.vol_der - state.vol_der) > 1:
+            return False
+        if abs(potential_state.outflow_mag - state.outflow_mag) > 1:
+            return False
+        if abs(potential_state.outflow_der - state.outflow_der) > 1:
+            return False
+        return True
+
+    @staticmethod
+    def check_exogenous_inflow(state, potential_state):
+        if state.inflow_der == State.der_qs[1] and potential_state.inflow_der == State.der_qs[2]:
+            return False
+        return True
 
     @staticmethod
     def check_value_constraint(potential_state):
