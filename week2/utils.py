@@ -217,6 +217,25 @@ class State:
                     outflow_mags.append(State.outflow_qs[1])
         return outflow_mags
 
+    @staticmethod
+    def check_influence(state, potential_state):
+        if state.inflow_mag >= state.outflow_mag and \
+                state.inflow_mag <= potential_state.inflow_mag and \
+                state.outflow_mag >= potential_state.outflow_mag and \
+                potential_state.inflow_der >= potential_state.outflow_der:
+            if potential_state.vol_der < state.vol_der:
+                return False
+
+        return True
+
+    @staticmethod
+    def check_continuity(state, potential_state):
+        pass
+
+    @staticmethod
+    def check_value_constraint(state, potential_state):
+        pass
+
 
 class Flow:
 
