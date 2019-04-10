@@ -35,20 +35,25 @@ def main():
 
     # print(scenario)
 
-    scenario_quantities = (0, 1, 0, 0, 0, 0)
-    scenario = State(0, -1, *scenario_quantities)
-    print(scenario)
+    # scenario_quantities = (0, 1, 0, 0, 0, 0)
+    # scenario = State(0, -1, *scenario_quantities)
+    # print(scenario)
 
-    test_quantities = (0, 0, 0, 0, 0, 0)
-    test = State(1, -1, *test_quantities)
+    test_quantities = (1, 1, 1, 1, 1, 1)
+    test = State(3, 2, *test_quantities)
+    print(test)
 
-    test_quantities_2 = (0, 1, 0, 0, 0, 0)
-    test_2 = State(2, -1, *test_quantities_2)
+    inflow_mags = State.propagate_inflow_mag(test)
+    vol_ders = State.propagate_vol_der(test)
+    vol_mags = State.propagate_vol_mag(test)
+    outflow_ders = State.propagate_vol_der(test)
+    outflow_mags = State.propagate_vol_mag(test)
 
-    print(test == scenario)
-    print(test_2 == scenario)
-
-    solver = Flow(scenario)
+    print(inflow_mags)
+    print(vol_ders)
+    print(vol_mags)
+    print(outflow_ders)
+    print(outflow_mags)
 
 
 if __name__ == '__main__':

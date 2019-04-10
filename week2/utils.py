@@ -1,3 +1,4 @@
+import copy
 
 
 class State:
@@ -18,6 +19,7 @@ class State:
 
     def __str__(self):
         return 'State id: {}\n'.format(self.id) \
+            + 'Parent id: {}\n'.format(self.parent_id) \
             + 'Inflow Magnitude: {}\n'.format(self.inflow_mag) \
             + 'Inflow Derivative: {}\n'.format(self.inflow_der) \
             + 'Outflow Magnitude: {}\n'.format(self.outflow_mag) \
@@ -34,7 +36,7 @@ class State:
             self.vol_der == other.vol_der
 
     @staticmethod
-    def propagate_inflow_mag(state: State):
+    def propagate_inflow_mag(state):
         '''Use the exogenous inflow derivative
         to propagate the magnitude of the inflow.
 
@@ -59,7 +61,7 @@ class State:
         return inflow_mags
 
     @staticmethod
-    def propagate_vol_der(state: State):
+    def propagate_vol_der(state):
         '''Use the influence I+(inflow, volume) and influence I-(outflow, volume) 
         to propagate the derivative of the volume.
 
@@ -91,10 +93,17 @@ class State:
             # the volume derivative is ambiguous.
             else:
                 vol_ders.extend(State.der_qs)
+
+        # Apply continuity constraint s.t. there is no jump in the derivative.
+        tmp = copy.deepcopy(vol_ders)
+        for vol_der in tmp:
+            if abs(vol_der - state.vol_der) > 1:
+                vol_ders.remove(vol_der)
+
         return vol_ders
 
     @staticmethod
-    def propagate_vol_mag(state: State):
+    def propagate_vol_mag(state):
         '''Use the volume derivative to propagate the volume magnitude.
 
         Returns:
@@ -137,10 +146,16 @@ class State:
             else:
                 vol_mags.append(State.vol_qs[1])
 
+        # Apply continuity constraint s.t. there is no jump in the magnitude.
+        tmp = copy.deepcopy(vol_mags)
+        for vol_mag in tmp:
+            if abs(vol_mag - state.vol_mag) > 1:
+                vol_mags.remove(vol_mag)
+
         return vol_mags
 
     @staticmethod
-    def propagate_outflow_der(state: State):
+    def propagate_outflow_der(state):
         '''Use the proportionality P+(volume, outflow)
         to propagate the derivative of the outflow.
 
@@ -153,7 +168,7 @@ class State:
         return outflow_ders
 
     @staticmethod
-    def propagate_outflow_mag(state: State):
+    def propagate_outflow_mag(state):
         outflow_mags = []
         # With 0 volume magnitude,
         # the outflow magnitude becomes 0 (V).
@@ -207,5 +222,3 @@ class Flow:
 
     def __init__(self, scenario):
         self.scenario = scenario
-
-    
