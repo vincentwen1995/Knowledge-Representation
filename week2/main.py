@@ -41,8 +41,8 @@ def main():
     # scenario = State(0, -1, *scenario_quantities)
     # print(scenario)
 
-    test_quantities = (1, 1, 1, 1, 1, 1)
-    test = State(3, 2, *test_quantities)
+    test_quantities = (1, 1, 1, 0, 2, 0)
+    test = State(9, 3, *test_quantities)
     print(test)
 
     inflow_mags = State.propagate_inflow_mag(test)
@@ -63,8 +63,10 @@ def main():
     print(outflow_mags)
 
     states_from_state3 = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
-    states_from_state3.remove(test.get_tuple())
     for potential_perm in copy.deepcopy(states_from_state3):
+        if potential_perm == test.get_tuple():
+            states_from_state3.remove(potential_perm)
+            continue
         # print('potential_perm: \n')
         # print(potential_perm)
         potential_state = State(0, 3, *potential_perm)
