@@ -71,7 +71,8 @@ def main():
         if State.check_influence(test, potential_state) and \
                 State.check_max_clipping(potential_state) and \
                 State.check_min_clipping(potential_state) and \
-                State.check_value_constraint(potential_state):
+                State.check_value_constraint(potential_state) and \
+                State.check_proportionality(potential_state):
             continue
         else:
             states_from_state3.remove(potential_perm)

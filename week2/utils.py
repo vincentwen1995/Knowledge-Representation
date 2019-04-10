@@ -258,6 +258,12 @@ class State:
         return True
 
     @staticmethod
+    def check_proportionality(potential_state):
+        if potential_state.outflow_der != potential_state.vol_der:
+            return False
+        return True
+
+    @staticmethod
     def check_continuity(state, potential_state):
         pass
 
