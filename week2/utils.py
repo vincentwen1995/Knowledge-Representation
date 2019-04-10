@@ -260,8 +260,11 @@ class State:
         pass
 
     @staticmethod
-    def check_value_constraint(state, potential_state):
-        pass
+    def check_value_constraint(potential_state):
+        if (potential_state.vol_mag == State.vol_qs[0] or potential_state.vol_mag == State.vol_qs[2]) and potential_state.outflow_mag != potential_state.vol_mag:
+            return False
+        else:
+            return True
 
 
 class Flow:

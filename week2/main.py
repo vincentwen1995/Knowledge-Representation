@@ -1,5 +1,6 @@
 from utils import State, Flow
 from itertools import product
+import copy
 
 
 def main():
@@ -63,13 +64,14 @@ def main():
 
     states_from_state3 = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
     states_from_state3.remove(test.get_tuple())
-    for potential_perm in list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders)):
+    for potential_perm in copy.deepcopy(states_from_state3):
         # print('potential_perm: \n')
         # print(potential_perm)
         potential_state = State(0, 3, *potential_perm)
         if State.check_influence(test, potential_state) and \
                 State.check_max_clipping(potential_state) and \
-                State.check_min_clipping(potential_state):
+                State.check_min_clipping(potential_state) and \
+                State.check_value_constraint(potential_state):
             continue
         else:
             states_from_state3.remove(potential_perm)
