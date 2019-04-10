@@ -35,6 +35,9 @@ class State:
             self.outflow_mag == other.outflow_mag and \
             self.outflow_der == other.outflow_der
 
+    def get_tuple(self):
+        return (self.inflow_mag, self.inflow_der, self.vol_mag, self.vol_der, self.outflow_mag, self.outflow_der)
+
     @staticmethod
     def propagate_inflow_mag(state):
         '''Use the exogenous inflow derivative

@@ -61,8 +61,8 @@ def main():
     print('Outflow Magnitudes: ')
     print(outflow_mags)
 
-    a = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
-
+    states_from_state3 = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
+    states_from_state3.remove(test.get_tuple())
     for potential_perm in list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders)):
         # print('potential_perm: \n')
         # print(potential_perm)
@@ -72,11 +72,11 @@ def main():
                 State.check_min_clipping(potential_state):
             continue
         else:
-            a.remove(potential_perm)
+            states_from_state3.remove(potential_perm)
 
     print('All possible combinations: ')
-    print(a)
-    print(len(a))
+    print(states_from_state3)
+    print(len(states_from_state3))
 
 
 if __name__ == '__main__':
