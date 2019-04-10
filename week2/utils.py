@@ -22,18 +22,18 @@ class State:
             + 'Parent id: {}\n'.format(self.parent_id) \
             + 'Inflow Magnitude: {}\n'.format(self.inflow_mag) \
             + 'Inflow Derivative: {}\n'.format(self.inflow_der) \
-            + 'Outflow Magnitude: {}\n'.format(self.outflow_mag) \
-            + 'Outflow Derivative: {}\n'.format(self.outflow_der) \
             + 'Volume Magnitude: {}\n'.format(self.vol_mag) \
-            + 'Volume Derivative: {}\n'.format(self.vol_der)
+            + 'Volume Derivative: {}\n'.format(self.vol_der) \
+            + 'Outflow Magnitude: {}\n'.format(self.outflow_mag) \
+            + 'Outflow Derivative: {}\n'.format(self.outflow_der)
 
     def __eq__(self, other):
         return self.inflow_mag == other.inflow_mag and \
             self.inflow_der == other.inflow_der and \
-            self.outflow_mag == other.outflow_der and \
-            self.outflow_der == other.outflow_der and \
             self.vol_mag == other.vol_mag and \
-            self.vol_der == other.vol_der
+            self.vol_der == other.vol_der and \
+            self.outflow_mag == other.outflow_mag and \
+            self.outflow_der == other.outflow_der
 
     @staticmethod
     def propagate_inflow_mag(state):

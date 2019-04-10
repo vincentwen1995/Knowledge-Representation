@@ -62,15 +62,14 @@ def main():
     print(outflow_mags)
 
     a = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
-    
+
     for potential_perm in list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders)):
-        print('potential_perm: \n')
-        print(potential_perm)
+        # print('potential_perm: \n')
+        # print(potential_perm)
         potential_state = State(0, 3, *potential_perm)
         if State.check_influence(test, potential_state):
-            print('Possible.\n')
+            continue
         else:
-            print('Not possible.\n')
             a.remove(potential_perm)
     print('All possible combinations: ')
     print(a)
