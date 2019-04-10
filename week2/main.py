@@ -61,9 +61,8 @@ def main():
     print('Outflow Magnitudes: ')
     print(outflow_mags)
 
-    print('All possible combinations: ')
-    print(list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders)))
-
+    a = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
+    
     for potential_perm in list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders)):
         print('potential_perm: \n')
         print(potential_perm)
@@ -72,6 +71,10 @@ def main():
             print('Possible.\n')
         else:
             print('Not possible.\n')
+            a.remove(potential_perm)
+    print('All possible combinations: ')
+    print(a)
+    print(len(a))
 
 
 if __name__ == '__main__':
