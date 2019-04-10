@@ -1,4 +1,5 @@
 from utils import State, Flow
+from itertools import product
 
 
 def main():
@@ -59,6 +60,9 @@ def main():
     print(outflow_ders)
     print('Outflow Magnitudes: ')
     print(outflow_mags)
+
+    print('All possible combinations: ')
+    print(list(product(inflow_mags, vol_ders, vol_mags, outflow_ders, outflow_mags)))
 
 
 if __name__ == '__main__':
