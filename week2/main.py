@@ -41,10 +41,32 @@ def main():
     # scenario = State(0, -1, *scenario_quantities)
     # print(scenario)
 
-    test_quantities = (1, 1, 1, 1, 1, 1)
-    test = State(3, 2, *test_quantities)
+    # test_quantities = (1, 1, 1, 1, 1, 1)
+    # test = State(3, 2, *test_quantities)
+    # test_quantities = (0, 1, 0, 0, 0, 0)
+    # test = State(1, -1, *test_quantities)
+    # test_quantities = (1, 1, 0, 1, 0, 1)
+    # test = State(2, 1, *test_quantities)
+    # test_quantities = (1, 0, 2, 0, 2, 0)
+    # test = State(4, 3, *test_quantities)
+    # test_quantities = (1, 0, 1, 0, 2, 0)
+    # test = State(5, 3, *test_quantities)
+    # test_quantities = (1, 1, 2, 0, 2, 0)
+    # test = State(6, 3, *test_quantities)
+    # test_quantities = (1, 0, 1, 0, 1, 0)
+    # test = State(7, 3, *test_quantities)
+    # test_quantities = (1, 0, 1, 1, 1, 1)
+    # test = State(8, 3, *test_quantities)
     # test_quantities = (1, 1, 1, 0, 2, 0)
     # test = State(9, 3, *test_quantities)
+    # test_quantities = (1, 0, 1, -1, 2, -1)
+    # test = State(10, 9, *test_quantities)
+    # test_quantities = (1, -1, 2, 0, 2, 0)
+    # test = State(11, 4, *test_quantities)
+    # test_quantities = (1, -1, 1, 0, 2, 0)
+    # test = State(12, 5, *test_quantities)
+    test_quantities = (1, -1, 1, 1, 1, 1)
+    test = State(13, 7, *test_quantities)
     print(test)
 
     # inflow_mags = State.propagate_inflow_mag(test)
@@ -64,7 +86,7 @@ def main():
     # print('Outflow Magnitudes: ')
     # print(outflow_mags)
 
-    # states_from_state3 = list(product(inflow_mags, [1, 0], vol_mags, vol_ders, outflow_mags, outflow_ders))
+    # states_from_state3 = list(product(inflow_mags, State.der_qs, vol_mags, vol_ders, outflow_mags, outflow_ders))
     states_from_state3 = list(product(State.inflow_qs, State.der_qs, State.vol_qs, State.der_qs, State.outflow_qs, State.der_qs))
     for potential_perm in copy.deepcopy(states_from_state3):
         if potential_perm == test.get_tuple():
@@ -79,7 +101,10 @@ def main():
                 State.check_value_constraint(potential_state) and \
                 State.check_proportionality(potential_state) and \
                 State.check_continuity(test, potential_state) and \
-                State.check_exogenous_inflow(test, potential_state):
+                State.check_exogenous_inflow(test, potential_state) and \
+                State.check_simultaneous_change(test, potential_state) and \
+                State.check_point_values(test, potential_state) and \
+                State.check_interval_values(test, potential_state):
             continue
         else:
             states_from_state3.remove(potential_perm)
