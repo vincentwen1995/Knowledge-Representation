@@ -226,11 +226,11 @@ class State:
         if state.inflow_mag >= state.outflow_mag and \
                 state.inflow_mag <= potential_state.inflow_mag and \
                 state.outflow_mag >= potential_state.outflow_mag and \
-                potential_state.inflow_der >= potential_state.outflow_der and \
-                potential_state.inflow_der != State.der_qs[1] and \
-                potential_state.outflow_der != State.der_qs[1]:
+                potential_state.inflow_der >= potential_state.outflow_der:
             if potential_state.vol_der < state.vol_der:
-                return False
+                if not (potential_state.inflow_der == State.der_qs[1] and
+                        potential_state.outflow_der == State.der_qs[1]):
+                    return False
 
         return True
 
