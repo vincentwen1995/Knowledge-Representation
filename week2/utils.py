@@ -506,6 +506,7 @@ class Visualizer:
         self.graph = pydot.Dot(graph_type='digraph')
 
     def draw_states(self):
+        # For every state, generate a node in the graph with intra-state information.
         nodes = dict()
         for state in self.states:
             state_node = pydot.Node('State {}\nInflow({}, {})\nVolume({}, {})\nOutflow({}, {})'
@@ -513,6 +514,7 @@ class Visualizer:
                                     shape='box')
             nodes[state.id] = state_node
             self.graph.add_node(state_node)
+        # For every state, connnect the edges between itself and its children.
         for state in self.states:
             if state.id != 1:
                 for parent_id in state.parent_ids:
