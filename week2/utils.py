@@ -1,4 +1,5 @@
 import copy
+import pydot
 
 
 class State:
@@ -9,7 +10,7 @@ class State:
 
     def __init__(self, id, parent_id, inflow_mag, inflow_der, vol_mag, vol_der, outflow_mag, outflow_der):
         self.id = id
-        self.parent_id = parent_id
+        self.parent_id = [parent_id]
         self.inflow_mag = inflow_mag
         self.inflow_der = inflow_der
         self.outflow_mag = outflow_mag
@@ -265,12 +266,14 @@ class State:
 
     @staticmethod
     def check_proportionality(potential_state):
+        # Apply the proportionality constraint on outflow and volume.
         if potential_state.outflow_der != potential_state.vol_der:
             return False
         return True
 
     @staticmethod
     def check_continuity(state, potential_state):
+        # Apply continuity constraint on all the quantities.
         if abs(potential_state.inflow_mag - state.inflow_mag) > 1:
             return False
         if abs(potential_state.inflow_der - state.inflow_der) > 1:
@@ -287,12 +290,14 @@ class State:
 
     @staticmethod
     def check_exogenous_inflow(state, potential_state):
+        # Check the order of the exogenous inflow imposed.
         if state.inflow_der == State.der_qs[1] and potential_state.inflow_der == State.der_qs[2]:
             return False
         return True
 
     @staticmethod
     def check_value_constraint(potential_state):
+        # Check the value constraints between volume and outflow.
         if (potential_state.vol_mag == State.vol_qs[0] or potential_state.vol_mag == State.vol_qs[2]) and potential_state.outflow_mag != potential_state.vol_mag:
             return False
         else:
@@ -300,14 +305,13 @@ class State:
 
     @staticmethod
     def check_simultaneous_change(state, potential_state):
+        # Check simultaneous changes for both magnitudes and derivatives for the quantities (excluding extreme cases).
         if potential_state.inflow_mag != state.inflow_mag and \
                 potential_state.inflow_der != state.inflow_der:
-            # return False
             if not potential_state.inflow_mag == State.inflow_qs[0]:
                 return False
         if potential_state.vol_mag != state.vol_mag and \
                 potential_state.vol_der != state.vol_der:
-            # return False
             if not (potential_state.vol_mag == State.vol_qs[0] or
                     potential_state.vol_mag == State.vol_qs[2]):
                 return False
@@ -322,6 +326,7 @@ class State:
 
     @staticmethod
     def check_point_values(state, potential_state):
+        # Check transition from point values and the consistency w.r.t. their corresponding derivatives.
         if state.inflow_mag == State.inflow_qs[0]:
             if state.inflow_der == State.der_qs[0] and \
                     potential_state.inflow_mag >= state.inflow_mag:
@@ -359,46 +364,107 @@ class State:
 
     @staticmethod
     def check_interval_values(state, potential_state):
+        # Check transition from interval values and the consistency w.r.t. their corresponding derivatives.
         if state.inflow_mag == State.inflow_qs[1]:
             if state.inflow_der == State.der_qs[0] and \
                     potential_state.inflow_mag > state.inflow_mag:
                 return False
-            elif state.inflow_der == State.der_qs[2] and \
-                    potential_state.inflow_mag < state.inflow_mag:
-                return False
             elif state.inflow_der == State.der_qs[1] and \
                     potential_state.inflow_mag != state.inflow_mag:
+                return False
+            elif state.inflow_der == State.der_qs[2] and \
+                    potential_state.inflow_mag < state.inflow_mag:
                 return False
 
         if state.vol_mag == State.vol_qs[1]:
             if state.vol_der == State.der_qs[0] and \
                     potential_state.vol_mag > state.vol_mag:
                 return False
-            elif state.vol_der == State.der_qs[2] and \
-                    potential_state.vol_mag < state.vol_mag:
-                return False
             elif state.vol_der == State.der_qs[1] and \
                     potential_state.vol_mag != state.vol_mag:
+                return False
+            elif state.vol_der == State.der_qs[2] and \
+                    potential_state.vol_mag < state.vol_mag:
                 return False
 
         if state.outflow_mag == State.outflow_qs[1]:
             if state.outflow_der == State.der_qs[0] and \
                     potential_state.outflow_mag > state.outflow_mag:
                 return False
-            elif state.outflow_der == State.der_qs[2] and \
-                    potential_state.outflow_mag < state.outflow_mag:
-                return False
             elif state.outflow_der == State.der_qs[1] and \
                     potential_state.outflow_mag != state.outflow_mag:
                 return False
+            elif state.outflow_der == State.der_qs[2] and \
+                    potential_state.outflow_mag < state.outflow_mag:
+                return False
         return True
-
-    @staticmethod
-    def check_epsilon_ordering(state, potential_state):
-        pass
 
 
 class Flow:
 
     def __init__(self, scenario):
         self.scenario = scenario
+
+    def search(self):
+        # Initialize variables.
+        states = [self.scenario]
+        visited_states = []
+        parent_state = self.scenario
+        counter = 1
+
+        # Terminate when there is no more parent_state set up.
+        while parent_state:
+            # Generate all the permutations of the state space.
+            state_space_perms = list(product(State.inflow_qs, State.der_qs, State.vol_qs, State.der_qs, State.outflow_qs, State.der_qs))
+            # Search through the permutations and remove the implausible ones.
+            for potential_perm in copy.deepcopy(state_space_perms):
+                if potential_perm == parent_state.get_tuple():
+                    state_space_perms.remove(potential_perm)
+                    continue
+
+                potential_state = State(-1, -1, *potential_perm)
+                if State.check_influence(parent_state, potential_state) and \
+                        State.check_max_clipping(potential_state) and \
+                        State.check_min_clipping(potential_state) and \
+                        State.check_value_constraint(potential_state) and \
+                        State.check_proportionality(potential_state) and \
+                        State.check_continuity(parent_state, potential_state) and \
+                        State.check_exogenous_inflow(parent_state, potential_state) and \
+                        State.check_simultaneous_change(parent_state, potential_state) and \
+                        State.check_point_values(parent_state, potential_state) and \
+                        State.check_interval_values(parent_state, potential_state):
+                    continue
+                else:
+                    state_space_perms.remove(potential_perm)
+            # For every plausible child state,
+            # if it already exists, record the current parent state's id;
+            # if it does not exist, add it to the states queue.
+            for child_state_perm in state_space_perms:
+                tmp = State(counter, parent_state.id, *child_state_perm)
+                exist = False
+                for state in states:
+                    if state == tmp:
+                        state.parent_id.append(parent_state.id)
+                        exist = True
+                        break
+                if not exist:
+                    states.append(tmp)
+                    counter += 1
+            # Add the parent_state to the visited list.
+            visited_states.append(parent_state)
+            parent_state = None
+            # Find the first non-visited state in the states queue and set it as the next parent state.
+            for state in states:
+                if state not in visited_states:
+                    parent_state = state
+                    break
+        return states
+
+
+class Visualizer:
+
+    def __init__(self, states):
+        self.states = states
+
+    def decode_states(self):
+        pass
