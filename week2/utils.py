@@ -258,11 +258,11 @@ class State:
 
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
-                potential_state.outflow_der <= state.outflow_der:
+                    potential_state.outflow_der <= state.outflow_der:
                 if potential_state.vol_der < state.der_qs[1]:
                     return False
             if potential_state.inflow_der <= state.inflow_der and \
-                potential_state.outflow_der >= state.outflow_der:
+                    potential_state.outflow_der >= state.outflow_der:
                 if potential_state.vol_der > state.der_qs[1]:
                     return False
         return True
@@ -441,7 +441,7 @@ class Flow:
         # Terminate when there is no more parent_state set up.
         while parent_state:
             # Generate all the permutations of the state space.
-            state_space_perms = list(product(State.inflow_qs, State.der_qs, State.vol_qs, State.der_qs, State.outflow_qs, State.der_qs))            
+            state_space_perms = list(product(State.inflow_qs, State.der_qs, State.vol_qs, State.der_qs, State.outflow_qs, State.der_qs))
             # Search through the permutations and remove the implausible ones.
             for potential_perm in copy.deepcopy(state_space_perms):
                 if potential_perm == parent_state.get_tuple():
