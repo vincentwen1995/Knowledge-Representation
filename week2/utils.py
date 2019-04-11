@@ -43,19 +43,19 @@ class State:
     def diff(self, other):
         result = ''
         if self.inflow_mag != other.inflow_mag:
-            result += 'In Mag: {} -> {}\n'.format(State.str_mag_qs[other.inflow_mag], State.str_mag_qs[self.inflow_mag])
+            result += 'In  Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.inflow_mag], State.str_mag_qs[self.inflow_mag])
         if self.inflow_der != other.inflow_der:
-            result += 'In Der: {} -> {}\n'.format(State.str_der_qs[other.inflow_der], State.str_der_qs[self.inflow_der])
+            result += 'In  Der:  {}  -->  {}\n'.format(State.str_der_qs[other.inflow_der], State.str_der_qs[self.inflow_der])
 
         if self.vol_mag != other.vol_mag:
-            result += 'Vol Mag: {} -> {}\n'.format(State.str_mag_qs[other.vol_mag], State.str_mag_qs[self.vol_mag])
+            result += 'Vol Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.vol_mag], State.str_mag_qs[self.vol_mag])
         if self.vol_der != other.vol_der:
-            result += 'Vol Der: {} -> {}\n'.format(State.str_der_qs[other.vol_der], State.str_der_qs[self.vol_der])
+            result += 'Vol Der:  {}  -->  {}\n'.format(State.str_der_qs[other.vol_der], State.str_der_qs[self.vol_der])
 
         if self.outflow_mag != other.outflow_mag:
-            result += 'Out Mag: {} -> {}\n'.format(State.str_mag_qs[other.outflow_mag], State.str_mag_qs[self.outflow_mag])
+            result += 'Out Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.outflow_mag], State.str_mag_qs[self.outflow_mag])
         if self.outflow_der != other.outflow_der:
-            result += 'Out Der: {} -> {}\n'.format(State.str_der_qs[other.outflow_der], State.str_der_qs[self.outflow_der])
+            result += 'Out Der:  {}  -->  {}\n'.format(State.str_der_qs[other.outflow_der], State.str_der_qs[self.outflow_der])
 
         return result
 
@@ -525,3 +525,14 @@ class Visualizer:
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         self.graph.write_pdf(os.path.join(dirname, 'state_graph.pdf'))
+
+    def output_trace(self):
+        dirname = os.path.dirname(__file__)
+        dirname = os.path.join(dirname, 'result')
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        with open(os.path.join(dirname, 'trace.txt'), 'w') as trace_file:
+            for state in self.states:
+                for child_state in self.states:
+                    if state.id in child_state.parent_ids:
+                        trace_file.write('State {:<2}  -->  State {:<2}:  '.format(state.id, child_state.id) + state.diff(child_state).replace('\n', '    ') + '\n')
