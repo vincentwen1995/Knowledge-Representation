@@ -259,11 +259,13 @@ class State:
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
                 potential_state.outflow_der <= state.outflow_der:
-                if potential_state.vol_der < state.der_qs[1]:
+                if potential_state.vol_der < state.der_qs[1] and \
+                    not potential_state.inflow_mag < potential_state.outflow_mag:
                     return False
             if potential_state.inflow_der <= state.inflow_der and \
                 potential_state.outflow_der >= state.outflow_der:
-                if potential_state.vol_der > state.der_qs[1]:
+                if potential_state.vol_der > state.der_qs[1] and \
+                    not potential_state.inflow_mag > potential_state.outflow_mag:
                     return False
         return True
 
@@ -470,7 +472,7 @@ class Flow:
                 exist = False
                 for state in states:
                     if state == tmp:
-                        state.parent_id.append(parent_state.id)
+                        state.parent_ids.append(parent_state.id)
                         exist = True
                         break
                 if not exist:
