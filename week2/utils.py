@@ -233,12 +233,15 @@ class State:
                         potential_state.outflow_der == State.der_qs[1]):
                     return False
 
-        if state.vol_der == State.der_qs[1] and \
-                potential_state.inflow_der >= state.inflow_der and \
+        if state.vol_der == State.der_qs[1]:
+            if potential_state.inflow_der >= state.inflow_der and \
                 potential_state.outflow_der <= state.outflow_der:
-            if potential_state.vol_der < state.der_qs[1]:
-                return False
-
+                if potential_state.vol_der < state.der_qs[1]:
+                    return False
+            if potential_state.inflow_der <= state.inflow_der and \
+                potential_state.outflow_der >= state.outflow_der:
+                if potential_state.vol_der > state.der_qs[1]:
+                    return False
         return True
 
     @staticmethod
