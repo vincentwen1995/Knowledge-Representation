@@ -252,21 +252,25 @@ class State:
                 state.outflow_mag >= potential_state.outflow_mag and \
                 potential_state.inflow_der >= potential_state.outflow_der:
             if potential_state.vol_der <= state.vol_der:
-                if not (potential_state.inflow_der == State.der_qs[1] and
-                        potential_state.outflow_der == State.der_qs[1]):
-                    return False
+                if not ((potential_state.inflow_der == State.der_qs[1] and
+                        potential_state.outflow_der == State.der_qs[1]) or \
+                        (potential_state.inflow_der == State.der_qs[0] and
+                        potential_state.outflow_der == State.der_qs[0])):
+                        return False
 
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
                     potential_state.outflow_der <= state.outflow_der:
                 if potential_state.vol_der < state.der_qs[1] and \
-                        not potential_state.inflow_mag < potential_state.outflow_mag:
-                    return False
+                        not (potential_state.inflow_mag < potential_state.outflow_mag and \
+                            potential_state.outflow_mag != state.outflow_mag):
+                            return False
             if potential_state.inflow_der <= state.inflow_der and \
                     potential_state.outflow_der >= state.outflow_der:
                 if potential_state.vol_der > state.der_qs[1] and \
-                        not potential_state.inflow_mag > potential_state.outflow_mag:
-                    return False
+                        not (potential_state.inflow_mag > potential_state.outflow_mag and \
+                            potential_state.inflow_mag != state.inflow_mag):
+                            return False
         return True
 
     @staticmethod
@@ -346,9 +350,14 @@ class State:
 
         if potential_state.outflow_mag != state.outflow_mag and \
                 potential_state.outflow_der != state.outflow_der:
-            # return False
             if not (potential_state.outflow_mag == State.outflow_qs[0] or
                     potential_state.outflow_mag == State.outflow_qs[2]):
+                return False
+        if (potential_state.outflow_mag == State.outflow_qs[1] and \
+            state.outflow_mag == State.outflow_qs[0]) or \
+            (potential_state.vol_mag == State.vol_qs[1] and \
+            state.vol_mag == State.vol_qs[0]):
+            if potential_state.inflow_der != state.inflow_der:
                 return False
         return True
 
