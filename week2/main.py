@@ -1,12 +1,12 @@
-from utils import State, Flow
+from utils import *
 from itertools import product
 import copy
 
 
 def main():
 
-    # scenario_quantities = (0, 1, 0, 0, 0, 0)
-    # scenario = State(0, -1, *scenario_quantities)
+    scenario_quantities = (0, 1, 0, 0, 0, 0)
+    scenario = State(1, 0, *scenario_quantities)
     # print(scenario)
 
     # test_quantities = (1, 1, 1, 1, 1, 1)
