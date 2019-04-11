@@ -12,6 +12,7 @@ def main():
     plotter = Visualizer(result)
     plotter.draw_states()
     plotter.output_graph()
+    plotter.output_trace()
     print(len(result))
 
     # test_quantities = (1, 1, 1, 1, 1, 1)
