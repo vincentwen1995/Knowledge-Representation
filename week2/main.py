@@ -12,12 +12,8 @@ def main():
     plotter = Visualizer(result)
     plotter.draw_states()
     plotter.output_graph()
-<<<<<<< HEAD
-    print('The number of total states:', len(result))
-=======
     plotter.output_trace()
-    print(len(result))
->>>>>>> b6aae31ae14e19ad384ce12c44b49896b5fc83fa
+    print('The total number of all states:', len(result))
 
     # test_quantities = (0, 1, 0, 0, 0, 0)
     # test = State(1, 0, *test_quantities)
