@@ -8,16 +8,18 @@ def main():
     scenario_quantities = (0, 1, 0, 0, 0, 0)
     scenario = State(1, 0, *scenario_quantities)
     solver = Flow(scenario)
-    results = solver.search()
-    print(results)
-    # print(scenario)
+    result = solver.search()
+    plotter = Visualizer(result)
+    plotter.draw_states()
+    plotter.output_graph()
+    print(len(result))
 
     # test_quantities = (1, 1, 1, 1, 1, 1)
     # test = State(3, 2, *test_quantities)
     # test_quantities = (0, 1, 0, 0, 0, 0)
     # test = State(1, -1, *test_quantities)
     # test_quantities = (1, 1, 0, 1, 0, 1)
-    # test = State(2, 1, *test_quantities)
+    # test = State(2, 1, *test_quasntities)
     # test_quantities = (1, 0, 2, 0, 2, 0)
     # test = State(4, 3, *test_quantities)
     # test_quantities = (1, 0, 1, 0, 2, 0)
@@ -57,7 +59,7 @@ def main():
     # print('Outflow Magnitudes: ')
     # print(outflow_mags)
 
-    # states_from_state3 = list(product(inflow_mags, State.der_qs, vol_mags, vol_ders, outflow_mags, outflow_ders))
+    # # states_from_state3 = list(product(inflow_mags, State.der_qs, vol_mags, vol_ders, outflow_mags, outflow_ders))
     # states_from_state3 = list(product(State.inflow_qs, State.der_qs, State.vol_qs, State.der_qs, State.outflow_qs, State.der_qs))
     # for potential_perm in copy.deepcopy(states_from_state3):
     #     if potential_perm == test.get_tuple():
