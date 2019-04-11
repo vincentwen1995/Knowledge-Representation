@@ -438,7 +438,7 @@ class Flow:
         states = [self.scenario]
         visited_states = []
         parent_state = self.scenario
-        counter = 1
+        counter = 2
 
         # Terminate when there is no more parent_state set up.
         while parent_state:
@@ -507,7 +507,8 @@ class Visualizer:
         for state in self.states:
             if state.id != 1:
                 for parent_id in state.parent_ids:
-                    self.graph.add_edge(pydot.Edge(nodes[parent_id], nodes[state.id], label=state.diff(self.states_dict[parent_id])))
+                    # self.graph.add_edge(pydot.Edge(nodes[parent_id], nodes[state.id], label=state.diff(self.states_dict[parent_id])))
+                    self.graph.add_edge(pydot.Edge(nodes[parent_id], nodes[state.id]))
 
     def output_graph(self):
         dirname = os.path.dirname(__file__)
