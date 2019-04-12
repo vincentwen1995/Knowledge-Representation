@@ -262,6 +262,11 @@ class State:
             potential_state.outflow_mag > potential_state.inflow_mag:
             if not potential_state.vol_der == State.der_qs[0]:
                 return False
+        
+        if potential_state.outflow_mag == State.outflow_qs[0] and \
+            potential_state.inflow_mag > potential_state.outflow_mag:
+            if not potential_state.vol_der == State.der_qs[2]:
+                return False
 
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
@@ -278,7 +283,7 @@ class State:
                             potential_state.inflow_mag != state.inflow_mag):
                             return False
             if potential_state.inflow_mag == State.inflow_qs[0] and \
-                potential_state.outflow_mag != state.outflow_qs[0]:
+                potential_state.outflow_mag != State.outflow_qs[0]:
                 if not potential_state.vol_der == State.der_qs[0]:
                     return False
         return True
@@ -414,10 +419,11 @@ class State:
 
     @staticmethod
     def check_impossible_states(potential_state):
-        if potential_state.inflow_mag == state.inflow_qs[1] and potential_state.inflow_der == State.der_qs[1] and \
-            potential_state.vol_mag == state.vol_qs[0] and potential_state.vol_der == State.der_qs[1] and \
-                potential_state.outflow_mag == state.outflow_qs[0] and potential_state.outflow_der == State.der_qs[1]:
+        if potential_state.inflow_mag == State.inflow_qs[1] and potential_state.inflow_der == State.der_qs[0] and \
+            potential_state.vol_mag == State.vol_qs[0] and potential_state.vol_der == State.der_qs[1] and \
+                potential_state.outflow_mag == State.outflow_qs[0] and potential_state.outflow_der == State.der_qs[1]:
                 return False
+        return True
 
     @staticmethod
     def check_interval_values(state, potential_state):
@@ -489,7 +495,8 @@ class Flow:
                         State.check_exogenous_inflow(parent_state, potential_state) and \
                         State.check_simultaneous_change(parent_state, potential_state) and \
                         State.check_point_values(parent_state, potential_state) and \
-                        State.check_interval_values(parent_state, potential_state):
+                        State.check_interval_values(parent_state, potential_state) and \
+                        State.check_impossible_states(potential_state):
                     continue
                 else:
                     state_space_perms.remove(potential_perm)

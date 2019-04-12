@@ -39,20 +39,20 @@ def main():
     # test = State(11, 4, *test_quantities)
     # test_quantities = (1, -1, 1, 0, 2, 0)
     # test = State(12, 5, *test_quantities)
-    # test_quantities = (1, -1, 1, 1, 1, 1)   # mistake
+    # test_quantities = (1, -1, 1, 1, 1, 1)  # mistake
     # test = State(13, 7, *test_quantities)
-    test_quantities = (1, -1, 1, -1, 1, -1)
-    test = State(14, 10, *test_quantities)
+    # test_quantities = (1, -1, 1, -1, 1, -1)  # mistake
+    # test = State(14, 10, *test_quantities)
     # test_quantities = (1, -1, 1, 0, 1, 0)
     # test = State(15, 7, *test_quantities)
     # test_quantities = (1, 0, 2, -1, 2, -1)
     # test = State(16, 6, *test_quantities)
-    # test_quantities = (1, -1, 1, -1, 2, -1)
+    # test_quantities = (1, -1, 1, -1, 2, -1)  # mistake
     # test = State(17, 5, *test_quantities)
-    # test_quantities = (1, -1, 2, -1, 2, -1)
+    # test_quantities = (1, -1, 2, -1, 2, -1)  # mistake
     # test = State(18, 4, *test_quantities)
-    # test_quantities = (1, 0, 1, -1, 1, -1)
-    # test = State(19, 10, *test_quantities)
+    test_quantities = (1, 0, 1, -1, 1, -1)  # mistake
+    test = State(19, 10, *test_quantities)
     # test_quantities = (0, 0, 1, -1, 1, -1)
     # test = State(20, 14, *test_quantities)
     # test_quantities = (0, 0, 0, 0, 0, 0)
@@ -63,8 +63,6 @@ def main():
     # test = State(23, 12, *test_quantities)
     # test_quantities = (0, 0, 2, -1, 2, -1)
     # test = State(24, 11, *test_quantities)
-    # test_quantities = (0, 0, 2, 0, 2, 0)
-    # test = State(25, 99, *test_quantities)
     print('\nTest state:')
     print(test)
 
@@ -85,7 +83,8 @@ def main():
                 State.check_exogenous_inflow(test, potential_state) and \
                 State.check_simultaneous_change(test, potential_state) and \
                 State.check_point_values(test, potential_state) and \
-                State.check_interval_values(test, potential_state):
+                State.check_interval_values(test, potential_state) and \
+                State.check_impossible_states(potential_state):
             continue
         else:
             test_state.remove(potential_perm)
