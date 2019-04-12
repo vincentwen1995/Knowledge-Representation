@@ -43,19 +43,19 @@ class State:
     def diff(self, other):
         result = ''
         if self.inflow_mag != other.inflow_mag:
-            result += 'In  Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.inflow_mag], State.str_mag_qs[self.inflow_mag])
+            result += 'In  Mag:  {:^3}  -->  {:^3}\n'.format(State.str_mag_qs[other.inflow_mag], State.str_mag_qs[self.inflow_mag])
         if self.inflow_der != other.inflow_der:
-            result += 'In  Der:  {}  -->  {}\n'.format(State.str_der_qs[other.inflow_der], State.str_der_qs[self.inflow_der])
+            result += 'In  Der:  {:^3}  -->  {:^3}\n'.format(State.str_der_qs[other.inflow_der], State.str_der_qs[self.inflow_der])
 
         if self.vol_mag != other.vol_mag:
-            result += 'Vol Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.vol_mag], State.str_mag_qs[self.vol_mag])
+            result += 'Vol Mag:  {:^3}  -->  {:^3}\n'.format(State.str_mag_qs[other.vol_mag], State.str_mag_qs[self.vol_mag])
         if self.vol_der != other.vol_der:
-            result += 'Vol Der:  {}  -->  {}\n'.format(State.str_der_qs[other.vol_der], State.str_der_qs[self.vol_der])
+            result += 'Vol Der:  {:^3}  -->  {:^3}\n'.format(State.str_der_qs[other.vol_der], State.str_der_qs[self.vol_der])
 
         if self.outflow_mag != other.outflow_mag:
-            result += 'Out Mag:  {}  -->  {}\n'.format(State.str_mag_qs[other.outflow_mag], State.str_mag_qs[self.outflow_mag])
+            result += 'Out Mag:  {:^3}  -->  {:^3}\n'.format(State.str_mag_qs[other.outflow_mag], State.str_mag_qs[self.outflow_mag])
         if self.outflow_der != other.outflow_der:
-            result += 'Out Der:  {}  -->  {}\n'.format(State.str_der_qs[other.outflow_der], State.str_der_qs[self.outflow_der])
+            result += 'Out Der:  {:^3}  -->  {:^3}\n'.format(State.str_der_qs[other.outflow_der], State.str_der_qs[self.outflow_der])
 
         return result
 
@@ -253,10 +253,10 @@ class State:
                 potential_state.inflow_der >= potential_state.outflow_der:
             if potential_state.vol_der <= state.vol_der:
                 if not ((potential_state.inflow_der == State.der_qs[1] and
-                        potential_state.outflow_der == State.der_qs[1]) or \
+                         potential_state.outflow_der == State.der_qs[1]) or
                         (potential_state.inflow_der == State.der_qs[0] and
-                        potential_state.outflow_der == State.der_qs[0])):
-                        return False
+                         potential_state.outflow_der == State.der_qs[0])):
+                    return False
 
         if potential_state.inflow_mag == State.inflow_qs[0] and \
             potential_state.outflow_mag > potential_state.inflow_mag:
@@ -266,6 +266,7 @@ class State:
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
                     potential_state.outflow_der <= state.outflow_der:
+<<<<<<< HEAD
                 if potential_state.vol_der < State.der_qs[1] and \
                         not (potential_state.inflow_mag < potential_state.outflow_mag and \
                             (potential_state.outflow_mag != state.outflow_mag or \
@@ -280,6 +281,17 @@ class State:
             if potential_state.inflow_mag == State.inflow_qs[0] and \
                 potential_state.outflow_mag != state.outflow_qs[0]:
                 if not potential_state.vol_der == State.der_qs[0]:
+=======
+                if potential_state.vol_der < state.der_qs[1] and \
+                        not (potential_state.inflow_mag < potential_state.outflow_mag and
+                             potential_state.outflow_mag != state.outflow_mag):
+                    return False
+            if potential_state.inflow_der <= state.inflow_der and \
+                    potential_state.outflow_der >= state.outflow_der:
+                if potential_state.vol_der > state.der_qs[1] and \
+                        not (potential_state.inflow_mag > potential_state.outflow_mag and
+                             potential_state.inflow_mag != state.inflow_mag):
+>>>>>>> f6400ecb8924757a3267165d1832e34a8fb7593b
                     return False
         return True
 
@@ -366,10 +378,10 @@ class State:
             if not (potential_state.outflow_mag == State.outflow_qs[0] or
                     potential_state.outflow_mag == State.outflow_qs[2]):
                 return False
-        if (potential_state.outflow_mag == State.outflow_qs[1] and \
+        if (potential_state.outflow_mag == State.outflow_qs[1] and
             state.outflow_mag == State.outflow_qs[0]) or \
-            (potential_state.vol_mag == State.vol_qs[1] and \
-            state.vol_mag == State.vol_qs[0]):
+            (potential_state.vol_mag == State.vol_qs[1] and
+             state.vol_mag == State.vol_qs[0]):
             if potential_state.inflow_der != state.inflow_der:
                 return False
         return True
@@ -526,6 +538,7 @@ class Visualizer:
         self.graph = pydot.Dot(graph_type='digraph')
 
     def draw_states(self):
+        # For every state, generate a node in the graph with intra-state information.
         nodes = dict()
         for state in self.states:
             state_node = pydot.Node('State {}\nInflow({}, {})\nVolume({}, {})\nOutflow({}, {})'
@@ -533,6 +546,7 @@ class Visualizer:
                                     shape='box')
             nodes[state.id] = state_node
             self.graph.add_node(state_node)
+        # For every state, connnect the edges between itself and its children.
         for state in self.states:
             if state.id != 1:
                 for parent_id in state.parent_ids:
@@ -555,4 +569,5 @@ class Visualizer:
             for state in self.states:
                 for child_state in self.states:
                     if state.id in child_state.parent_ids:
-                        trace_file.write('State {:<2}  -->  State {:<2}:  '.format(state.id, child_state.id) + state.diff(child_state).replace('\n', '    ') + '\n')
+                        trace_file.write('State {:<2}  -->  State {:<2}:    '.format(state.id, child_state.id) +
+                                         state.diff(child_state).replace('\n', '    ') + '\n')
