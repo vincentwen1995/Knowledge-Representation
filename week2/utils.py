@@ -266,7 +266,6 @@ class State:
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
                     potential_state.outflow_der <= state.outflow_der:
-<<<<<<< HEAD
                 if potential_state.vol_der < State.der_qs[1] and \
                         not (potential_state.inflow_mag < potential_state.outflow_mag and \
                             (potential_state.outflow_mag != state.outflow_mag or \
@@ -281,17 +280,6 @@ class State:
             if potential_state.inflow_mag == State.inflow_qs[0] and \
                 potential_state.outflow_mag != state.outflow_qs[0]:
                 if not potential_state.vol_der == State.der_qs[0]:
-=======
-                if potential_state.vol_der < state.der_qs[1] and \
-                        not (potential_state.inflow_mag < potential_state.outflow_mag and
-                             potential_state.outflow_mag != state.outflow_mag):
-                    return False
-            if potential_state.inflow_der <= state.inflow_der and \
-                    potential_state.outflow_der >= state.outflow_der:
-                if potential_state.vol_der > state.der_qs[1] and \
-                        not (potential_state.inflow_mag > potential_state.outflow_mag and
-                             potential_state.inflow_mag != state.inflow_mag):
->>>>>>> f6400ecb8924757a3267165d1832e34a8fb7593b
                     return False
         return True
 
