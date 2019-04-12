@@ -509,5 +509,5 @@ class Visualizer:
             for state in self.states:
                 for child_state in self.states:
                     if state.id in child_state.parent_ids:
-                        trace_file.write('State {:<2}  -->  State {:<2}:    '.format(state.id, child_state.id) +
-                                         state.diff(child_state).replace('\n', '    ') + '\n')
+                        trace_file.write('State {:<2} --> State {:<2}:\n'.format(state.id, child_state.id) +
+                                         state.diff(child_state) + '\n')
