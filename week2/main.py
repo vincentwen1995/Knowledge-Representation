@@ -27,9 +27,9 @@ def main():
     # test = State(5, 3, *test_quantities)
     # test_quantities = (1, 1, 2, 0, 2, 0)
     # test = State(6, 3, *test_quantities)
-    # test_quantities = (1, 0, 1, 0, 1, 0)
+    # test_quantities = (1, 0, 1, 0, 1, 0)  # mistake
     # test = State(7, 3, *test_quantities)
-    # test_quantities = (1, 0, 1, 1, 1, 1)
+    # test_quantities = (1, 0, 1, 1, 1, 1)  # mistake
     # test = State(8, 3, *test_quantities)
     # test_quantities = (1, 1, 1, 0, 2, 0)
     # test = State(9, 3, *test_quantities)
@@ -39,10 +39,10 @@ def main():
     # test = State(11, 4, *test_quantities)
     # test_quantities = (1, -1, 1, 0, 2, 0)
     # test = State(12, 5, *test_quantities)
-    # test_quantities = (1, -1, 1, 1, 1, 1)
+    # test_quantities = (1, -1, 1, 1, 1, 1)   # mistake
     # test = State(13, 7, *test_quantities)
-    # test_quantities = (1, -1, 1, -1, 1, -1)
-    # test = State(14, 10, *test_quantities)
+    test_quantities = (1, -1, 1, -1, 1, -1)
+    test = State(14, 10, *test_quantities)
     # test_quantities = (1, -1, 1, 0, 1, 0)
     # test = State(15, 7, *test_quantities)
     # test_quantities = (1, 0, 2, -1, 2, -1)
@@ -61,8 +61,10 @@ def main():
     # test = State(22, 14, *test_quantities)
     # test_quantities = (0, 0, 1, -1, 2, -1)
     # test = State(23, 12, *test_quantities)
-    test_quantities = (0, 0, 2, -1, 2, -1)
-    test = State(24, 11, *test_quantities)
+    # test_quantities = (0, 0, 2, -1, 2, -1)
+    # test = State(24, 11, *test_quantities)
+    # test_quantities = (0, 0, 2, 0, 2, 0)
+    # test = State(25, 99, *test_quantities)
     print('\nTest state:')
     print(test)
 

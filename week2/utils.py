@@ -258,19 +258,29 @@ class State:
                         potential_state.outflow_der == State.der_qs[0])):
                         return False
 
+        if potential_state.inflow_mag == State.inflow_qs[0] and \
+            potential_state.outflow_mag > potential_state.inflow_mag:
+            if not potential_state.vol_der == State.der_qs[0]:
+                return False
+
         if state.vol_der == State.der_qs[1]:
             if potential_state.inflow_der >= state.inflow_der and \
                     potential_state.outflow_der <= state.outflow_der:
-                if potential_state.vol_der < state.der_qs[1] and \
+                if potential_state.vol_der < State.der_qs[1] and \
                         not (potential_state.inflow_mag < potential_state.outflow_mag and \
-                            potential_state.outflow_mag != state.outflow_mag):
+                            (potential_state.outflow_mag != state.outflow_mag or \
+                                potential_state.inflow_mag == State.inflow_qs[0])):
                             return False
             if potential_state.inflow_der <= state.inflow_der and \
                     potential_state.outflow_der >= state.outflow_der:
-                if potential_state.vol_der > state.der_qs[1] and \
+                if potential_state.vol_der > State.der_qs[1] and \
                         not (potential_state.inflow_mag > potential_state.outflow_mag and \
                             potential_state.inflow_mag != state.inflow_mag):
                             return False
+            if potential_state.inflow_mag == State.inflow_qs[0] and \
+                potential_state.outflow_mag != state.outflow_qs[0]:
+                if not potential_state.vol_der == State.der_qs[0]:
+                    return False
         return True
 
     @staticmethod
@@ -325,6 +335,9 @@ class State:
         # Check the order of the exogenous inflow imposed.
         if state.inflow_der == State.der_qs[1] and potential_state.inflow_der == State.der_qs[2]:
             return False
+        if potential_state.inflow_der == State.der_qs[1] and state.inflow_der == State.der_qs[0]:
+            if potential_state.inflow_mag == State.inflow_qs[1]:
+                return False
         return True
 
     @staticmethod
@@ -398,6 +411,13 @@ class State:
                 return False
 
         return True
+
+    @staticmethod
+    def check_impossible_states(potential_state):
+        if potential_state.inflow_mag == state.inflow_qs[1] and potential_state.inflow_der == State.der_qs[1] and \
+            potential_state.vol_mag == state.vol_qs[0] and potential_state.vol_der == State.der_qs[1] and \
+                potential_state.outflow_mag == state.outflow_qs[0] and potential_state.outflow_der == State.der_qs[1]:
+                return False
 
     @staticmethod
     def check_interval_values(state, potential_state):
